@@ -3,7 +3,10 @@ import { BecTopbar } from "bec-components";
 export const MainPage: React.FC = () => {
     return (
         <>
-        <BecTopbar />
+            <div className="flex flex-col w-1/2">
+                <BecTopbar programName="ISNR" companyLabel="Firma" company="Becom Electronics GmbH" />
+                Hi
+            </div>
         </>
     );
 }

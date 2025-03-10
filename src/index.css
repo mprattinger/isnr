@@ -1,3 +1,52 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Ubuntu Mono";
+    src: url("./assets/fonts/UbuntuMono-Regular.ttf"),
+      url("./assets/fonts/UbuntuMono-RegularItalic.ttf");
+
+    font-weight: normal;
+    font-variant: normal;
+  }
+
+  @font-face {
+    font-family: "Ubuntu Mono";
+    src: url("./assets/fonts/UbuntuMono-Bold.ttf"),
+      url("a./ssets/fonts/UbuntuMono-BoldItalic.ttf");
+
+    font-variant: normal;
+    font-weight: bold;
+  }
+
+  html,
+  body {
+    font-family: "Ubuntu Mono";
+  }
+
+  input::-webkit-outer-spin-button, 
+  input::-webkit-inner-spin-button { margin-left: 10px; } 
+}
+
+.becscrollbar::-webkit-scrollbar{
+    width: .5vw;
+  }
+  
+  .becscrollbar::-webkit-scrollbar-track{
+    background: transparent;
+  }
+  
+  .becscrollbar::-webkit-scrollbar-thumb{
+    background-color: rgba(60,170,220,0.5);
+    border-radius: 2vw;
+  }
+
+  .slash-separator span::after { 
+    content: '/'; 
+  } 
+  
+  .slash-separator span:last-child::after { 
+    content: ''; 
+  }

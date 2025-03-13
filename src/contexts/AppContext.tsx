@@ -5,9 +5,13 @@ import {
   PropsWithChildren,
   SetStateAction,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from "react";
-import { Factory } from "../features/core/ProfidBase";
+import { Factory } from "../features/core/ProfidBaseApi";
+import { AccessRightsAnalyzer } from "../features/core/services/AccessRightsAnalyzer";
+import { IAccessRight } from "../features/core/models/AccessRight";
 
 // #region Context
 
@@ -25,6 +29,10 @@ type AppContextType = {
   setError: Dispatch<SetStateAction<ApplicationError | undefined>>;
   isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  accessRights: IAccessRight;
+  setAccessRights: Dispatch<SetStateAction<IAccessRight>>;
+  subscribeToKeyEvent: (listenerInfo: IKeyListener) => void;
+  clearKeyListeners: () => void;
 };
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -34,6 +42,12 @@ interface IAppContextProviderProps extends PropsWithChildren {}
 interface InfoPayload {
   BTRM: number;
   AUTH: string;
+  ACCESS: string;
+}
+
+interface IKeyListener {
+  forKey: string;
+  event: (key: string) => void;
 }
 
 export const AppContextProvider = (props: IAppContextProviderProps) => {
@@ -50,12 +64,61 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
     ApplicationError | undefined
   >(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const [accessRights, setAccessRights] = useState({} as IAccessRight);
+
+  // #region Key Handling
+  const [keyListeners, setKeyListeners] = useState([] as IKeyListener[]);
+  const keyListenersRef = useRef(keyListeners);
+
+  const subscribeToKeyEvent = (listenerInfo: IKeyListener) => {
+    setKeyListeners((prev) => {
+      console.log(prev);
+      return [...prev, listenerInfo];
+    });
+  };
+  const clearKeyListeners = () => {
+    console.log(keyListeners.length);
+    setKeyListeners([]);
+  };
+
+  const eventHandler = (event: KeyboardEvent) => {
+    //Check if key is in list
+    const listeners = keyListenersRef.current.filter(
+      (x) => x.forKey === event.key
+    );
+    listeners.forEach((l) => l.event(event.key));
+
+    if (listeners.length > 0) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
+
+  useEffect(() => {
+    keyListenersRef.current = keyListeners;
+  }, [keyListeners]);
+
+  useEffect(() => {
+    window.addEventListener("keyup", eventHandler);
+
+    return () => {
+      window.removeEventListener("keyup", eventHandler);
+    };
+  }, []);
+  // #endregion
 
   const handleInfoPayload = (payload: string) => {
     const payloadData = JSON.parse(payload) as InfoPayload;
+
     setBtrm(payloadData.BTRM);
+
     setPuiAuth(payloadData.AUTH);
     Factory(payloadData.AUTH);
+
+    if (payloadData.ACCESS && payloadData.ACCESS !== "") {
+      const ar = AccessRightsAnalyzer(payloadData.ACCESS);
+      setAccessRights(ar);
+    }
   };
 
   return (
@@ -74,6 +137,10 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
         setError: setCurrentError,
         isLoading,
         setIsLoading,
+        accessRights,
+        setAccessRights,
+        subscribeToKeyEvent,
+        clearKeyListeners,
       }}
     >
       {props.children}
@@ -100,6 +167,10 @@ export function useAppData() {
     setError,
     isLoading,
     setIsLoading,
+    accessRights,
+    setAccessRights,
+    subscribeToKeyEvent,
+    clearKeyListeners,
   } = useContext(AppContext);
 
   return {
@@ -116,6 +187,10 @@ export function useAppData() {
     setError,
     isLoading,
     setIsLoading,
+    accessRights,
+    setAccessRights,
+    subscribeToKeyEvent,
+    clearKeyListeners,
   };
 }
 

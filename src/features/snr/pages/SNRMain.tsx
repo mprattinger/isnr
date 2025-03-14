@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { OrderInfo } from "../components/OrderInfo";
 import { FeedbackTimer } from "../components/FeedbackTimer";
 import { SNRContextProvider, useSNRContext } from "../contexts/SNRContext";
+import { SNR } from "../components/SNR";
 
 export const SNRMain = () => {
   const { setProgramInfo } = useAppData();
@@ -35,7 +36,9 @@ export const SNRMain = () => {
           <OrderInfo />
           <FeedbackTimer />
         </BecPanelRowContainer>
-        <BecPanel>{variant}</BecPanel>
+        <BecPanel header={t("profid:24751")}>
+          <SNR />
+        </BecPanel>
         <BecPanel>
           <BecButtonRowContainer>
             {canPrint && (

@@ -1,17 +1,3 @@
 {
-  "NO_PARAMS": "Suche ohne Parameter nicht möglich",
-  "F130": "Kunde nicht gefunden",
-  "P021": "Fehler beim lesen der Kalkulation",
-  "P022": "Fehler beim lesen des Kalkulationsschema",
-  "F046": "Artikel nicht gefunden",
-  "NO_ARTICLEID": "Artikel ID Parameter fehlt",
-  "DAS_ERROR": "Fehler beim lesen des Artikels",
-  "DKA_OPEN": "Fehler beim lesen des Kunden",
-  "DKA_ERROR": "Fehler beim lesen des Kunden",
-  "PARAMETER_MISSING": "Kunden ID Parameter fehlt",
-  "ARTICLE_SEARCH.SERVER_ERROR": "Fehler beim suchen des Artikels",
-  "CUSTOMER_SEARCH.SERVER_ERROR": "Fehler beim suchen des Kunden",
-  "CALCULATION_SEARCH.SERVER_ERROR": "Fehler beim suchen von Kalkulationen",
-  "CALCULATION_DETAIL.SERVER_ERROR": "Fehler beim lesen der Kalkulation",
-  "CALCULATION_MATERIAL.SERVER_ERROR": "Fehler beim lesen der Materialien"
+  "PREPLOGON.SERVER_ERROR": "Fehler beim laden der Logon Daten"
 }

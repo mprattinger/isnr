@@ -22,7 +22,6 @@ export function App() {
   const { t } = useTranslation();
   const {
     companyName,
-    setCompanyName,
     setProgramInfo,
     programInfo,
     handleInfoPayload,
@@ -31,7 +30,6 @@ export function App() {
   } = useAppData();
 
   useEffect(() => {
-    setCompanyName("Becom Electronics GmbH");
     setProgramInfo(GetProgramInfo());
     RegisterRDFCommunication((action: string, payload: string) => {
       if (action === "getInfo") {
@@ -52,7 +50,7 @@ export function App() {
   return (
     <BecAppContainer>
       <BecTopbar
-        programName={t("profid:47091")}
+        programName={t("profid:24761")}
         functionLabel={t("profid:13591")}
         companyLabel={t("profid:13211")}
         functionCodes={functionCodes}

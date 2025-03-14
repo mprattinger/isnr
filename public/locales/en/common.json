@@ -1,17 +1,3 @@
 {
-  "NO_PARAMS": "Search without params not possible",
-  "F130": "Customer not found",
-  "P021": "Error reading calculation",
-  "P022": "Error reading calculation schema",
-  "F046": "Article not found",
-  "NO_ARTICLEID": "Artikel id parameter is missing",
-  "DAS_ERROR": "Error reading article",
-  "DKA_OPEN": "Error reading customer",
-  "DKA_ERROR": "Error reading customer",
-  "PARAMETER_MISSING": "Customer id parameter is missing",
-  "ARTICLE_SEARCH.SERVER_ERROR": "When searching articles an error occured!",
-  "CUSTOMER_SEARCH.SERVER_ERROR": "When searching for customer an error occured!",
-  "CALCULATION_SEARCH.SERVER_ERROR": "When searching calculations an error occured!",
-  "CALCULATION_DETAIL.SERVER_ERROR": "Error reading the calculation",
-  "CALCULATION_MATERIAL.SERVER_ERROR": "Error reading the materials"
+  "PREPLOGON.SERVER_ERROR": "Error loading logon data"
 }

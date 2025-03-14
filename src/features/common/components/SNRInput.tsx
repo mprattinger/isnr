@@ -1,16 +1,13 @@
 import { BecInputContainer, BecLabel } from "bec-react-components";
-import { createRef, useEffect, useState } from "react";
+import { createRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 interface ISNRInput {
-  onSnrEntered: (snr: string) => void;
-  processing: boolean;
+  onNewSnr: (snr: string) => void;
 }
 
 export const SNRInput = (props: ISNRInput) => {
   const { t } = useTranslation();
-
-  const [snrList, setSnrList] = useState<string[]>([]);
 
   const snrRef = createRef<HTMLInputElement>();
 
@@ -27,7 +24,9 @@ export const SNRInput = (props: ISNRInput) => {
 
     //Eingabe verarbeiten
     let inp = event.currentTarget as HTMLInputElement;
-    setSnrList((prev) => [...prev, inp.value]);
+    if (inp.value !== "") {
+      props.onNewSnr(inp.value);
+    }
     event.preventDefault();
     event.stopPropagation();
     inp.value = "";
@@ -43,15 +42,6 @@ export const SNRInput = (props: ISNRInput) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (snrList.length == 0) return;
-
-    let current = snrList.shift();
-    if (current && current !== "") {
-      props.onSnrEntered(current);
-    }
-  }, [snrList]);
-
   return (
     <BecInputContainer>
       <BecLabel id="snrInput" label={t("profid:24681")} />
@@ -61,7 +51,6 @@ export const SNRInput = (props: ISNRInput) => {
         ref={snrRef}
         className="border-b border-b-solid border-b-becgray-200"
       />
-      {props.processing && <p className="text-sm">Prüfung....</p>}
     </BecInputContainer>
   );
 };

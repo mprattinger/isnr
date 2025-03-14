@@ -14,7 +14,11 @@ export const Factory = (auth: string) => {
 
   instance.interceptors.request.use(
     (cfg) => {
-      cfg.url = cfg.url + `&AUTH=${puiAuth}`;
+      if (cfg.url?.includes("?")) {
+        cfg.url = cfg.url + `&AUTH=${puiAuth}`;
+      } else {
+        cfg.url = cfg.url + `?AUTH=${puiAuth}`;
+      }
       return cfg;
     },
     (err) => Promise.reject(err)

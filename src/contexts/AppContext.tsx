@@ -1,4 +1,8 @@
-import { ApplicationError, ProgramInfoModel } from "bec-react-components";
+import {
+  ApplicationError,
+  FunctionBoxItem,
+  ProgramInfoModel,
+} from "bec-react-components";
 import {
   createContext,
   Dispatch,
@@ -12,6 +16,7 @@ import {
 import { Factory } from "../features/core/ProfidBaseApi";
 import { AccessRightsAnalyzer } from "../features/core/services/AccessRightsAnalyzer";
 import { IAccessRight } from "../features/core/models/AccessRight";
+import { PrepLogonService } from "../features/common/services/PrepLogonService";
 
 // #region Context
 
@@ -24,6 +29,8 @@ type AppContextType = {
   setPuiAuth: Dispatch<SetStateAction<string>>;
   programInfo: ProgramInfoModel;
   setProgramInfo: Dispatch<SetStateAction<ProgramInfoModel>>;
+  functionCodes: FunctionBoxItem[];
+  setFunctionCodes: Dispatch<SetStateAction<FunctionBoxItem[]>>;
   handleInfoPayload: (payload: string) => void;
   error?: ApplicationError;
   setError: Dispatch<SetStateAction<ApplicationError | undefined>>;
@@ -60,6 +67,7 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
     screen: "",
     program: "",
   });
+  const [functionCodes, setFunctionCodes] = useState<FunctionBoxItem[]>([]);
   const [currentError, setCurrentError] = useState<
     ApplicationError | undefined
   >(undefined);
@@ -107,7 +115,7 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
   }, []);
   // #endregion
 
-  const handleInfoPayload = (payload: string) => {
+  const handleInfoPayload = async (payload: string) => {
     const payloadData = JSON.parse(payload) as InfoPayload;
 
     setBtrm(payloadData.BTRM);
@@ -119,6 +127,21 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
       const ar = AccessRightsAnalyzer(payloadData.ACCESS);
       setAccessRights(ar);
     }
+
+    //Firmen laden und aktuelle Fimra setzten
+    const companyResult = await PrepLogonService();
+    if (companyResult instanceof ApplicationError) {
+      setCurrentError(companyResult);
+      return;
+    }
+    const company = companyResult.find(
+      (x) => parseInt(x.compid) === payloadData.BTRM
+    );
+    if (company) {
+      setCompanyName(company.compname);
+    }
+
+    //TODO: FunctionCodes laden
   };
 
   return (
@@ -132,6 +155,8 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
         setPuiAuth,
         programInfo,
         setProgramInfo,
+        functionCodes,
+        setFunctionCodes,
         handleInfoPayload,
         error: currentError,
         setError: setCurrentError,
@@ -162,6 +187,8 @@ export function useAppData() {
     setPuiAuth,
     programInfo,
     setProgramInfo,
+    functionCodes,
+    setFunctionCodes,
     handleInfoPayload,
     error,
     setError,
@@ -182,6 +209,8 @@ export function useAppData() {
     setPuiAuth,
     programInfo,
     setProgramInfo,
+    functionCodes,
+    setFunctionCodes,
     handleInfoPayload,
     error,
     setError,

@@ -4,38 +4,53 @@ import { SNRList } from "../../common/components/SNRList";
 import { SNRItem } from "../../common/components/SNRItem";
 import { useState } from "react";
 
+const checkSnr = async (snr: string): Promise<boolean> => {
+  return new Promise((res) => {
+    //Simulate web service call
+    //TODO: Implement api call
+    setTimeout(() => {
+      res(true);
+    }, 2000);
+  });
+};
+
 interface ISNRProps {}
 
 export const SNR = (props: ISNRProps) => {
   const [snrList, setSnrList] = useState<string[]>([]);
-  const [processing, setProcessing] = useState(false);
 
-  const handleSnrInput = async (snr: string) => {
-    const call = () => {
-      return new Promise((res) => {
-        setTimeout(() => {
-          res(undefined);
-        }, 2000);
+  const handleCheck = (snr: string) => {
+    return snrList.some((x) => x === snr);
+  };
+
+  const handleNewSnr = async (snr: string) => {
+    const tempSet = new Set(snrList);
+    if (tempSet.has(snr)) {
+      //SNR already in the list
+      //TODO: Handle SNR already in the list case
+      return;
+    }
+
+    const checkResult = await checkSnr(snr);
+    if (checkResult) {
+      setSnrList((prev) => {
+        const updatedSet = new Set(prev);
+        updatedSet.add(snr);
+        return [...updatedSet];
       });
-    };
-
-    setProcessing(true);
-    await call();
-    setSnrList((prev) => [...prev, snr]);
-    setProcessing(false);
+    }
   };
 
   return (
     <>
       <div className="flex justify-between grow">
-        <SNRInput onSnrEntered={handleSnrInput} processing={processing} />
+        <SNRInput onNewSnr={handleNewSnr} />
         <CollectedItems />
       </div>
       <SNRList>
         {snrList.map((snr, idx) => (
-          <SNRItem no={idx + 1} snr={snr} />
+          <SNRItem key={idx} no={idx + 1} snr={snr} />
         ))}
-        {/* <SNRItem no={1} snr="1234567898765" /> */}
       </SNRList>
     </>
   );

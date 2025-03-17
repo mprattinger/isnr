@@ -1,9 +1,4 @@
-import {
-  BecAppContainer,
-  BecError,
-  BecTopbar,
-  FunctionBoxItem,
-} from "bec-react-components";
+import { BecAppContainer, BecError, BecTopbar } from "bec-react-components";
 import { useAppData } from "./contexts/AppContext";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +13,6 @@ import { OverviewPage } from "./features/overview/pages/OverviewPage";
 import { SNRMain } from "./features/snr/pages/SNRMain";
 
 export function App() {
-  const [functionCodes] = useState<FunctionBoxItem[]>([]);
   const { t } = useTranslation();
   const {
     companyName,
@@ -27,6 +21,7 @@ export function App() {
     handleInfoPayload,
     error,
     setError,
+    functionCodes,
   } = useAppData();
 
   useEffect(() => {

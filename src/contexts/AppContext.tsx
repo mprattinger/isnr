@@ -16,7 +16,8 @@ import {
 import { Factory } from "../features/core/ProfidBaseApi";
 import { AccessRightsAnalyzer } from "../features/core/services/AccessRightsAnalyzer";
 import { IAccessRight } from "../features/core/models/AccessRight";
-import { PrepLogonService } from "../features/common/services/PrepLogonService";
+import { LoadLoginInformation } from "../features/common/services/PrepLogonService";
+import { LoadFunctions } from "../features/common/services/FunctionsService";
 
 // #region Context
 
@@ -129,7 +130,7 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
     }
 
     //Firmen laden und aktuelle Fimra setzten
-    const companyResult = await PrepLogonService();
+    const companyResult = await LoadLoginInformation();
     if (companyResult instanceof ApplicationError) {
       setCurrentError(companyResult);
       return;
@@ -142,6 +143,12 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
     }
 
     //TODO: FunctionCodes laden
+    const funtionsResult = await LoadFunctions(payloadData.BTRM);
+    if (funtionsResult instanceof ApplicationError) {
+      setCurrentError(funtionsResult);
+      return;
+    }
+    setFunctionCodes(funtionsResult);
   };
 
   return (

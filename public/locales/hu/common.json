@@ -1,3 +1,11 @@
 {
-  "PREPLOGON.SERVER_ERROR": "Error loading logon data"
+  "PREPLOGON.SERVER_ERROR": "Error loading logon data",
+  "FUNCTIONS.SERVER_ERROR": "Error loading function calls",
+  "SNR.CHECK.SERVER_ERROR": "Error checking snr",
+  "SNR.SNR_NOT_EXTERN": "Only customer snr are allowed",
+  "LISTSTATE_ADDED": "Added",
+  "LISTSTATE_DUPLICATE": "This entry already exists in the list",
+  "LISTSTATE_EXISTING": "Already saved entry",
+  "LISTSTATE_ISPARENT": "This entry is the same as the master serialnumber",
+  "LISTSTATE_MODIFIED": "This entry has been modified"
 }

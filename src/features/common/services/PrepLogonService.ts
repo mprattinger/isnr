@@ -6,7 +6,7 @@ import {
 import i18n from "../../../utils/i18n";
 import { profidBaseApi } from "../../core/ProfidBaseApi";
 
-export const PrepLogonService = async (): Promise<
+export const LoadLoginInformation = async (): Promise<
   Company[] | ApplicationError
 > => {
   const url = `preplogon/comp`;

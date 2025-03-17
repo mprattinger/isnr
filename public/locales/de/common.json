@@ -1,3 +1,11 @@
 {
-  "PREPLOGON.SERVER_ERROR": "Fehler beim laden der Logon Daten"
+  "PREPLOGON.SERVER_ERROR": "Fehler beim laden der Logon Daten",
+  "FUNCTIONS.SERVER_ERROR": "Fehler beim laden der Funktionssprünge",
+  "SNR.CHECK.SERVER_ERROR": "Fehler beim prüfen der Seriennummer",
+  "SNR.SNR_NOT_EXTERN": "Es sing nur Kundenseriennummern zulässig",
+  "LISTSTATE_ADDED": "Hinzugefügt",
+  "LISTSTATE_DUPLICATE": "Dieser Eintrag existiert bereits in der Liste",
+  "LISTSTATE_EXISTING": "Bereits gespeicherter Eintrag",
+  "LISTSTATE_ISPARENT": "Dieser Eintrag ist gleich der Kopfseriennummer",
+  "LISTSTATE_MODIFIED": "Dieser Eintrag wurde geändert"
 }

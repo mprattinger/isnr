@@ -14,8 +14,12 @@ import { OrderInfo } from "../components/OrderInfo";
 import { FeedbackTimer } from "../components/FeedbackTimer";
 import { SNRContextProvider } from "../contexts/SNRContext";
 import { SNR } from "../components/SNR";
-import { OrderInfoModal } from "../components/modals/OrderInfoModal";
+import {
+  OrderInfoModal,
+  OrderInfoResult,
+} from "../components/modals/OrderInfoModal";
 import { ModalHandle } from "../../core/components/Modal";
+import { SNRModal } from "../components/modals/SNRModal";
 
 export const SNRMain = () => {
   const { setProgramInfo } = useAppData();
@@ -24,6 +28,7 @@ export const SNRMain = () => {
   const [variant, setVariant] = useState(Variant.UNKNOWN);
 
   const orderInfoModal = useRef<ModalHandle>(null);
+  const snrModal = useRef<ModalHandle>(null);
 
   const [pageReady, setPageReady] = useState(false); //When all data is loaded, the page is ready for display
   const [canPrint, setCanPrint] = useState(false);
@@ -37,6 +42,14 @@ export const SNRMain = () => {
     //1.Order information
     orderInfoModal.current?.open();
   }, []);
+
+  const handleOrderInfoResult = (data: OrderInfoResult) => {
+    orderInfoModal.current?.close();
+    snrModal.current?.open();
+  };
+
+  const handleOrderInfoCanceled = () => {};
+  const handleSnrCanceled = () => {};
 
   return pageReady ? (
     <SNRContextProvider variant={variant}>
@@ -69,7 +82,12 @@ export const SNRMain = () => {
     </SNRContextProvider>
   ) : (
     <div>
-      <OrderInfoModal modalRef={orderInfoModal} />
+      <OrderInfoModal
+        modalRef={orderInfoModal}
+        onModalResult={handleOrderInfoResult}
+        onCancel={handleOrderInfoCanceled}
+      />
+      <SNRModal modalRef={snrModal} onCancel={handleSnrCanceled} />
     </div>
   );
 };

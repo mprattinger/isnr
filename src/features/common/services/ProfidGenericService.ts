@@ -26,6 +26,7 @@ export const CheckFeedbackId = async (
       );
     }
 
+    //TODO: Translate errors
     if (resp.data.status !== "OK") {
       return ApplicationErrorFactory(
         t(resp.data.errmsg),
@@ -67,6 +68,7 @@ export const CheckEmployeeId = async (
       );
     }
 
+    //TODO: Translate errors
     if (resp.data.status !== "OK") {
       return ApplicationErrorFactory(
         t(resp.data.errmsg),

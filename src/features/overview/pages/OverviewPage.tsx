@@ -60,26 +60,28 @@ export const OverviewPage = (props: IOverviewPageProps) => {
   }, []);
 
   return (
-    <BecPanelContainer>
-      <BecPanelRowContainer>
-        {accessRights.production && (
-          <ProductionSection onImageClicked={handleImageClicked} />
-        )}
-        {accessRights.shipment && (
-          <ShipmentSection onImageClicked={handleImageClicked} />
-        )}
-        {accessRights.administration && (
-          <AdminSectionSection onImageClicked={handleImageClicked} />
-        )}
-      </BecPanelRowContainer>
-      <BecPanel>
-        <BecButtonRowContainer>
-          <BecButton variant={"default"} size={"default"}>
-            {t("profid:900000421")}
-          </BecButton>
-          {/* <BecButton Style="ButtonStyle.PRIMARY" Text="@loc["900000421"]" KeyboardKey="F7" OnClickCallback="endClicked" /> */}
-        </BecButtonRowContainer>
-      </BecPanel>
-    </BecPanelContainer>
+    <>
+      <BecPanelContainer>
+        <BecPanelRowContainer>
+          {accessRights.production && (
+            <ProductionSection onImageClicked={handleImageClicked} />
+          )}
+          {accessRights.shipment && (
+            <ShipmentSection onImageClicked={handleImageClicked} />
+          )}
+          {accessRights.administration && (
+            <AdminSectionSection onImageClicked={handleImageClicked} />
+          )}
+        </BecPanelRowContainer>
+        <BecPanel>
+          <BecButtonRowContainer>
+            <BecButton variant={"default"} size={"default"}>
+              {t("profid:900000421")}
+            </BecButton>
+            {/* <BecButton Style="ButtonStyle.PRIMARY" Text="@loc["900000421"]" KeyboardKey="F7" OnClickCallback="endClicked" /> */}
+          </BecButtonRowContainer>
+        </BecPanel>
+      </BecPanelContainer>
+    </>
   );
 };

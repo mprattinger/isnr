@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppData } from "../../../contexts/AppContext";
 import { useLocation } from "react-router-dom";
 import { Variant } from "../models/Types";
@@ -12,8 +12,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { OrderInfo } from "../components/OrderInfo";
 import { FeedbackTimer } from "../components/FeedbackTimer";
-import { SNRContextProvider, useSNRContext } from "../contexts/SNRContext";
+import { SNRContextProvider } from "../contexts/SNRContext";
 import { SNR } from "../components/SNR";
+import { OrderInfoModal } from "../components/modals/OrderInfoModal";
+import { ModalHandle } from "../../core/components/Modal";
 
 export const SNRMain = () => {
   const { setProgramInfo } = useAppData();
@@ -21,15 +23,22 @@ export const SNRMain = () => {
   const { t } = useTranslation();
   const [variant, setVariant] = useState(Variant.UNKNOWN);
 
+  const orderInfoModal = useRef<ModalHandle>(null);
+
+  const [pageReady, setPageReady] = useState(false); //When all data is loaded, the page is ready for display
   const [canPrint, setCanPrint] = useState(false);
   const [canSave, setCanSave] = useState(false);
 
   useEffect(() => {
     setProgramInfo((prev) => ({ ...prev, screen: "2" }));
     setVariant(location.state as Variant);
+
+    //Ask User for data
+    //1.Order information
+    orderInfoModal.current?.open();
   }, []);
 
-  return (
+  return pageReady ? (
     <SNRContextProvider variant={variant}>
       <BecPanelContainer>
         <BecPanelRowContainer>
@@ -58,5 +67,9 @@ export const SNRMain = () => {
         </BecPanel>
       </BecPanelContainer>
     </SNRContextProvider>
+  ) : (
+    <div>
+      <OrderInfoModal modalRef={orderInfoModal} />
+    </div>
   );
 };

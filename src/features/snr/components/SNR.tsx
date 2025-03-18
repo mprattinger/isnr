@@ -12,14 +12,7 @@ import {
 } from "bec-react-components";
 import { SNRListEntry } from "../models/SNRListEntry";
 import { SNRListEntryState, SnrOrigin, Variant } from "../models/Types";
-import { set } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-
-// const checkSnr = async (mandant: snr: string): Promise<boolean> => {
-//   return new Promise((res) => {
-//     await CheckSnr();
-//   });
-// };
 
 interface ISNRProps {}
 
@@ -29,9 +22,6 @@ export const SNR = (props: ISNRProps) => {
   const { variant } = useSNRContext();
   const { btrm, setError } = useAppData();
   const { t } = useTranslation();
-  // const handleCheck = (snr: string) => {
-  //   return snrList.some((x) => x === snr);
-  // };
 
   const handleNewSnr = async (snr: string) => {
     let entry = {} as SNRListEntry;
@@ -42,8 +32,6 @@ export const SNR = (props: ISNRProps) => {
     }
 
     let current = [...snrList];
-    // current.filter(x => x.state != SNRListEntryState.REMOVED).forEach((x) => tempSet.add(x.serialnumber));
-    // if (tempSet.has(snr)) {
     if (
       current
         .filter((x) => x.state !== SNRListEntryState.REMOVED)

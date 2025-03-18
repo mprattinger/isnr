@@ -22,11 +22,6 @@ export const ShipmentSection = (props: IShipmentSection) => {
           onImageClicked={props.onImageClicked}
         />
         <ISNRImageButton
-          image="checkpackaging"
-          label={t("profid:43381")}
-          onImageClicked={props.onImageClicked}
-        />
-        <ISNRImageButton
           image="shipping"
           label={t("profid:43411")}
           onImageClicked={props.onImageClicked}

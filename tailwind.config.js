@@ -20,7 +20,7 @@ export default {
           500: "#707070", //lightgray
           700: "#3c3b41" //darkgray
         },
-        becmodal: "rgba(178,178,178,0.7)",
+        becmodal: "rgba(178,178,178,0.8)",
         snradded: "#CCFFCC",
         snrexisting: "#CCFFCC",
         snrduplicate: "#FFCCCC",

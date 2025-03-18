@@ -7,5 +7,8 @@
   "LISTSTATE_DUPLICATE": "Dieser Eintrag existiert bereits in der Liste",
   "LISTSTATE_EXISTING": "Bereits gespeicherter Eintrag",
   "LISTSTATE_ISPARENT": "Dieser Eintrag ist gleich der Kopfseriennummer",
-  "LISTSTATE_MODIFIED": "Dieser Eintrag wurde geändert"
+  "LISTSTATE_MODIFIED": "Dieser Eintrag wurde geändert",
+  "PROFIDGENERIC.FEEDBACKCHECK.SERVER_ERROR": "Fehler beim prüfen der Rückmeldenummer",
+  "PROFIDGENERIC.EMPLOYEEIDCHECK.SERVER_ERROR": "Fehler beim prüfen der Mitarbeiternummer",
+  "EnterOrderData": "Eingabe Auftragsdaten"
 }

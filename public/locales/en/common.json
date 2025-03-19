@@ -10,6 +10,7 @@
   "LISTSTATE_MODIFIED": "This entry has been modified",
   "PROFIDGENERIC.FEEDBACKCHECK.SERVER_ERROR": "Error checking feedback id",
   "PROFIDGENERIC.EMPLOYEEIDCHECK.SERVER_ERROR": "Error checking employee id",
+  "PROFIDGENERIC.SNRCHECK.SERVER_ERROR": "Error checking snr",
   "EnterOrderData": "Enter order data",
   "PackagingDataEmptyCreatesNew" : "If snr is empty, a new one will be generated"
 }

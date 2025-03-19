@@ -10,37 +10,39 @@ import { useSNRContext } from "../contexts/SNRContext";
 export const OrderInfo = () => {
   const { t } = useTranslation();
 
+  const { data } = useSNRContext();
+
   return (
     <BecPanel header={t("profid:43461")}>
       <BecPanelRowContainer>
         <BecTextOutput
           id="feedbackId"
           label={t("profid:24031")}
-          value="4565150"
+          value={data?.feedback.rmnr}
         />
         <BecKeyedOutput
           id="article"
           label={t("profid:4021")}
           type="Artikel"
-          value1="EI79945---"
-          value2="0"
-          value3="1"
+          value1={data?.feedback.artnr}
+          value2={data?.feedback.aeaa}
+          value3={data?.feedback.btra}
         />
         <BecKeyedOutput
           id="order"
           label={t("profid:4601")}
           type="Auftrag mit Position"
-          value1="8745478"
-          value2="0"
-          value3="0"
-          value4="1"
+          value1={data?.feedback.orderId}
+          value2={data?.feedback.aura}
+          value3={data?.feedback.aure}
+          value4={data?.feedback.position}
         />
       </BecPanelRowContainer>
       <BecPanelRowContainer>
         <BecTextOutput
           id="snr"
           label={t("profid:24722")}
-          value="1982538207106"
+          value={data?.snr.snr}
         />
       </BecPanelRowContainer>
     </BecPanel>

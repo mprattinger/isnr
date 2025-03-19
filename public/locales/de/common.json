@@ -10,6 +10,7 @@
   "LISTSTATE_MODIFIED": "Dieser Eintrag wurde geändert",
   "PROFIDGENERIC.FEEDBACKCHECK.SERVER_ERROR": "Fehler beim prüfen der Rückmeldenummer",
   "PROFIDGENERIC.EMPLOYEEIDCHECK.SERVER_ERROR": "Fehler beim prüfen der Mitarbeiternummer",
+  "PROFIDGENERIC.SNRCHECK.SERVER_ERROR": "Fehler beim prüfen der Seriennummer",
   "EnterOrderData": "Eingabe Auftragsdaten",
   "PackagingDataEmptyCreatesNew" : "Bei leerer SNR wird einen neue generiert"
 }

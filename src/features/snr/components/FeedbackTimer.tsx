@@ -7,6 +7,7 @@ import {
 } from "bec-react-components";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSNRContext } from "../contexts/SNRContext";
 
 export const FeedbackTimer = () => {
   const { t } = useTranslation();
@@ -28,6 +29,8 @@ export const FeedbackTimer = () => {
   const [pauseStarted, setPauseStarted] = useState(new Date(0));
 
   const [timer, setTimer] = useState(false);
+
+  const { data } = useSNRContext();
 
   const handleStart = () => {
     const wasAct = workingActive;
@@ -171,7 +174,11 @@ export const FeedbackTimer = () => {
   return (
     <BecPanel header={t("profid:35231")}>
       <BecPanelRowContainer>
-        <BecTextOutput id="employeeid" label={t("profid:22011")} value="5555" />
+        <BecTextOutput
+          id="employeeid"
+          label={t("profid:22011")}
+          value={data?.employee.employeeId.toString() ?? ""}
+        />
         <BecTextOutput
           id="worked"
           label={t("profid:13041")}

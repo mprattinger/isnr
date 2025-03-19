@@ -20,6 +20,7 @@ import {
   FeedbackIdCheckResponse,
 } from "../../../common/services/ProfidGenericService";
 import { useAppData } from "../../../../contexts/AppContext";
+import { Variant } from "../../models/Types";
 
 // const orderInfoSchema = z.object({
 //   feedbackId: z
@@ -54,6 +55,7 @@ export interface OrderInfoResult {
 
 interface IOrderInfoModalProps {
   modalRef: Ref<ModalHandle>;
+  variant: Variant;
   onModalResult: (data: OrderInfoResult) => void;
   onCancel: () => void;
 }
@@ -142,12 +144,7 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
               {t("profid:900002541")}
             </BecButton>
           </BecButtonRowContainer>
-          {error && error !== "" && (
-            // <div className="flex w-full bg-red-500 text-white px-2">
-            //   {error}
-            // </div>
-            <BecError errorMessage={error} />
-          )}
+          {error && error !== "" && <BecError errorMessage={error} />}
         </BecPanel>
       </form>
     </Modal>

@@ -6,6 +6,7 @@ import {
 } from "bec-react-components";
 import { ProfidApiBaseResponseModel } from "../models/ProfidApiBaseResponseModel";
 import { profidBaseApi } from "../../core/ProfidBaseApi";
+import { Variant } from "../../snr/models/Types";
 
 export const CheckFeedbackId = async (
   mandant: number,
@@ -91,6 +92,52 @@ export const CheckEmployeeId = async (
   }
 };
 
+export const CheckSnr = async (
+  mandant: number,
+  variant: Variant,
+  snr?: string
+) => {
+  let url = `profidgen/seriennr?mand=${mandant}&type=${variant}`;
+  if (snr && snr !== "") {
+    url = `${url}&snr=${snr}`;
+  }
+  const t = i18n.t;
+
+  try {
+    const resp = await profidBaseApi<
+      ProfidApiBaseResponseModel<SNRCheckResponse>
+    >(url);
+
+    if (resp.status !== 200) {
+      return ApplicationErrorFactory(
+        t("PROFIDGENERIC.SNRCHECK.SERVER_ERROR"),
+        "PROFIDGENERIC.SNRCHECK.SERVER_ERROR"
+      );
+    }
+
+    //TODO: Translate errors
+    if (resp.data.status !== "OK") {
+      return ApplicationErrorFactory(
+        t(resp.data.errmsg),
+        "PROFIDGENERIC.SNRCHECK.API_ERROR"
+      );
+    }
+
+    return resp.data.data;
+  } catch (error) {
+    let msg = error;
+
+    if (error instanceof AxiosError) {
+      msg = error.message;
+    }
+
+    return ApplicationErrorFactory(
+      `${t("PROFIDGENERIC.SNRCHECK.SERVER_ERROR")} (${msg})`,
+      "PROFIDGENERIC.SNRCHECK.SERVER_ERROR"
+    );
+  }
+};
+
 export interface FeedbackIdCheckResponse {
   rmnr: string;
   artnr: string;
@@ -115,4 +162,16 @@ export interface EmployeeIdCheckResponse {
   employeeId: number;
   firstname: string;
   lastname: string;
+}
+
+export interface SNRCheckResponse {
+  snr: string;
+  snrOrigin: string;
+  children: SNRChildren[];
+}
+
+export interface SNRChildren {
+  childSnr: string;
+  origin: string;
+  datetime: string;
 }

@@ -1,6 +1,6 @@
 import { Ref, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import Modal, { ModalHandle } from "../../../core/components/Modal";
+import Modal from "../../../../playground/modals/Modal";
 import {
   ApplicationError,
   BecButton,
@@ -19,12 +19,19 @@ import {
   CheckSnr,
   SNRCheckResponse,
 } from "../../../common/services/ProfidGenericService";
+import {
+  IBaseModalProps,
+  ModalResult,
+} from "../../../../playground/modals/Types";
 
-interface ISNRModalProps {
-  modalRef: Ref<ModalHandle>;
+// interface ISNRModalProps {
+//   modalRef: Ref<ModalHandle>;
+//   variant: Variant;
+//   onModalResult: (data: SNRCheckResponse) => void;
+//   onCancel: () => void;
+// }
+interface ISNRModalProps extends IBaseModalProps<SNRCheckResponse | undefined> {
   variant: Variant;
-  onModalResult: (data: SNRCheckResponse) => void;
-  onCancel: () => void;
 }
 
 export const SNRModal = (props: ISNRModalProps) => {
@@ -94,7 +101,7 @@ export const SNRModal = (props: ISNRModalProps) => {
       return;
     }
 
-    props.onModalResult(snrCheckResult);
+    props.callback(ModalResult.OkWithData(snrCheckResult));
   };
 
   return (
@@ -119,7 +126,10 @@ export const SNRModal = (props: ISNRModalProps) => {
             <BecButton type="submit" variant={"orange"}>
               {t("profid:900001402")}
             </BecButton>
-            <BecButton variant={"orange"} onClick={props.onCancel}>
+            <BecButton
+              variant={"orange"}
+              onClick={() => props.callback(ModalResult.Cancel())}
+            >
               {t("profid:900002541")}
             </BecButton>
           </BecButtonRowContainer>

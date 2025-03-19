@@ -62,7 +62,7 @@ export const OverviewPage = (props: IOverviewPageProps) => {
   return (
     <>
       <BecPanelContainer>
-        <BecPanelRowContainer>
+        <BecPanelRowContainer className="w-[1280px] overflow-hidden">
           {accessRights.production && (
             <ProductionSection onImageClicked={handleImageClicked} />
           )}

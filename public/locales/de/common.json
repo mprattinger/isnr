@@ -12,5 +12,9 @@
   "PROFIDGENERIC.EMPLOYEEIDCHECK.SERVER_ERROR": "Fehler beim prüfen der Mitarbeiternummer",
   "PROFIDGENERIC.SNRCHECK.SERVER_ERROR": "Fehler beim prüfen der Seriennummer",
   "EnterOrderData": "Eingabe Auftragsdaten",
-  "PackagingDataEmptyCreatesNew" : "Bei leerer SNR wird einen neue generiert"
+  "PackagingDataEmptyCreatesNew" : "Bei leerer SNR wird einen neue generiert",
+  "MaxPackaging": "Die Box ist voll. Bitte speichern Sie die eingepackten Seriennummern um mit einer neuen Box zu beginnen!",
+  "MaxPackagingHeader": "Box voll",
+  "MaxTool": "Es kann nichts mehr in das Geräte eingebaut werden. Bitte speichern Sie die eingebauten Seriennummern um mit einem neuen Gerät zu beginnen!",
+  "MaxToolHeader": "Gerät voll"
 }

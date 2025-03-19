@@ -28,6 +28,12 @@
 
   input::-webkit-outer-spin-button, 
   input::-webkit-inner-spin-button { margin-left: 10px; } 
+
+  body, #root {
+    width: 1280px; 
+    height: 800px;
+    overflow: hidden;
+  }
 }
 
 .becscrollbar::-webkit-scrollbar{

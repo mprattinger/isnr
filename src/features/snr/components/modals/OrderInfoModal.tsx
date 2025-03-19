@@ -1,5 +1,5 @@
 import { Ref, useMemo, useState } from "react";
-import Modal, { ModalHandle } from "../../../core/components/Modal";
+import Modal from "../../../../playground/modals/Modal";
 import {
   ApplicationError,
   BecButton,
@@ -7,7 +7,6 @@ import {
   BecError,
   BecFormInput,
   BecPanel,
-  BecPanelContainer,
 } from "bec-react-components";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -21,6 +20,10 @@ import {
 } from "../../../common/services/ProfidGenericService";
 import { useAppData } from "../../../../contexts/AppContext";
 import { Variant } from "../../models/Types";
+import {
+  IBaseModalProps,
+  ModalResult,
+} from "../../../../playground/modals/Types";
 
 // const orderInfoSchema = z.object({
 //   feedbackId: z
@@ -53,11 +56,9 @@ export interface OrderInfoResult {
   employee: EmployeeIdCheckResponse;
 }
 
-interface IOrderInfoModalProps {
-  modalRef: Ref<ModalHandle>;
+interface IOrderInfoModalProps
+  extends IBaseModalProps<OrderInfoResult | undefined> {
   variant: Variant;
-  onModalResult: (data: OrderInfoResult) => void;
-  onCancel: () => void;
 }
 
 export const OrderInfoModal = (props: IOrderInfoModalProps) => {
@@ -110,10 +111,16 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
       return;
     }
 
-    props.onModalResult({
-      feedback: feedbackResult,
-      employee: employeeResult,
-    } as OrderInfoResult);
+    // props.onModalResult({
+    //   feedback: feedbackResult,
+    //   employee: employeeResult,
+    // } as OrderInfoResult);
+    props.callback(
+      ModalResult.OkWithData({
+        feedback: feedbackResult,
+        employee: employeeResult,
+      } as OrderInfoResult)
+    );
   };
 
   return (
@@ -140,7 +147,10 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
             <BecButton type="submit" variant={"orange"}>
               {t("profid:900001402")}
             </BecButton>
-            <BecButton variant={"orange"} onClick={props.onCancel}>
+            <BecButton
+              variant={"orange"}
+              onClick={() => props.callback(ModalResult.Cancel())}
+            >
               {t("profid:900002541")}
             </BecButton>
           </BecButtonRowContainer>

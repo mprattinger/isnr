@@ -1,14 +1,10 @@
 import { PropsWithChildren, useImperativeHandle, useState } from "react";
 import { createPortal } from "react-dom";
-
-export type ModalHandle = {
-  open: () => void;
-  close: () => void;
-};
-
+import { ModalHandle, ModalResult } from "./Types";
 interface IModalProps extends PropsWithChildren {
   defaultOpened?: boolean;
   ref: React.Ref<ModalHandle>;
+  callback: (result: ModalResult<undefined>) => void;
 }
 
 const modalElement = document.getElementById("modal");
@@ -32,7 +28,7 @@ const Modal = (props: IModalProps) => {
           <div className="flex flex-col w-96 relative">
             <div
               className="cursor-pointer text-xl hover:font-bold absolute right-3 top-2"
-              onClick={() => setIsOpen(false)}
+              onClick={() => props.callback(ModalResult.Cancel())}
             >
               X
             </div>

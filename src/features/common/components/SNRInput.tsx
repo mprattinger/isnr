@@ -3,11 +3,13 @@ import { createRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 interface ISNRInput {
-  onNewSnr: (snr: string) => void;
+  onNewSnr: (snr: string) => Promise<void>;
 }
 
 export const SNRInput = (props: ISNRInput) => {
   const { t } = useTranslation();
+
+  const queue: string[] = [];
 
   const snrRef = createRef<HTMLInputElement>();
 
@@ -24,9 +26,8 @@ export const SNRInput = (props: ISNRInput) => {
 
     //Eingabe verarbeiten
     let inp = event.currentTarget as HTMLInputElement;
-    if (inp.value !== "") {
-      props.onNewSnr(inp.value);
-    }
+    queue.push(inp.value);
+    processQueue();
     event.preventDefault();
     event.stopPropagation();
     inp.value = "";
@@ -41,6 +42,17 @@ export const SNRInput = (props: ISNRInput) => {
       snrRef.current?.removeEventListener("keydown", handlePressedDown);
     };
   }, []);
+
+  const processQueue = async () => {
+    if (queue.length > 0) {
+      const current = queue.shift();
+      if (current && current !== "") {
+        await props.onNewSnr(current);
+      }
+
+      await processQueue();
+    }
+  };
 
   return (
     <BecInputContainer>

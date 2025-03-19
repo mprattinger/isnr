@@ -12,5 +12,9 @@
   "PROFIDGENERIC.EMPLOYEEIDCHECK.SERVER_ERROR": "Error checking employee id",
   "PROFIDGENERIC.SNRCHECK.SERVER_ERROR": "Error checking snr",
   "EnterOrderData": "Enter order data",
-  "PackagingDataEmptyCreatesNew" : "If snr is empty, a new one will be generated"
+  "PackagingDataEmptyCreatesNew" : "If snr is empty, a new one will be generated",
+  "MaxPackaging": "The box is full. Please save the packed ISNRs to start with a new box!",
+  "MaxPackagingHeader": "Box is full",
+  "MaxTool": "Nothing can be added to the device anymore. Please save the added serialnumbers and start with a new device!",
+  "MaxToolHeader": "Device full"
 }

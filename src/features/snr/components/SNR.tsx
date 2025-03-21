@@ -31,7 +31,7 @@ export const SNR = (props: ISNRProps) => {
 
   const { t } = useTranslation();
 
-  const boxFullModal = useRef<ModalHandle<undefined>>(null);
+  const boxFullModal = useRef<ModalHandle>(null);
 
   const [boxFullTitle, setBoxFullTitle] = useState("");
   const [boxFullText, setBoxFullText] = useState("");
@@ -98,7 +98,7 @@ export const SNR = (props: ISNRProps) => {
       variant === Variant.PACKAGING
     ) {
       //Inform user, that the package size exceeds the max
-      boxFullModal.current?.open(undefined);
+      boxFullModal.current?.open();
       return;
     }
     //Check Serial number

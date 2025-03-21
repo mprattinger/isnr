@@ -1,7 +1,7 @@
 import { Ref } from "react";
 
-export type ModalHandle<T> = {
-  open: (payload: T) => void;
+export type ModalHandle<T = undefined> = {
+  open: (payload?: T) => void;
   close: () => void;
 };
 

@@ -22,7 +22,7 @@ export const SNRItem = (props: ISNRItemProps) => {
   const { t } = useTranslation();
 
   const modifyPopup = useRef<ModalHandle<string>>(null);
-  const deletePopup = useRef<ModalHandle<undefined>>(null);
+  const deletePopup = useRef<ModalHandle>(null);
 
   const itemTooltip = (): string => {
     if (props.isHeader) return "";
@@ -76,7 +76,7 @@ export const SNRItem = (props: ISNRItemProps) => {
     if (action === "MODIFY") {
       modifyPopup.current?.open(props.snr?.serialnumber ?? "");
     } else {
-      deletePopup.current?.open(undefined);
+      deletePopup.current?.open();
     }
   };
 

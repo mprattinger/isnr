@@ -27,7 +27,7 @@ export function Modal<T>(props: IModalProps<T>) {
   useImperativeHandle(
     props.ref,
     () => ({
-      open: (payload: T) => {
+      open: (payload?: T) => {
         setIsOpen(true);
         const modalToggleEvent = new CustomEvent<IModalOpenEventPayload<T>>(
           ModalOpenEventName,

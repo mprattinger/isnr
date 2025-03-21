@@ -3,19 +3,19 @@ import {
   BecButtonRowContainer,
   BecPanel,
 } from "bec-react-components";
-import Modal from "./Modal";
 import { IBaseModalProps, ModalResult } from "./Types";
 import { useTranslation } from "react-i18next";
+import { Modal } from "./Modal";
 
-interface IYesNoModalProps extends IBaseModalProps<undefined> {
+interface IYesNoModalProps extends IBaseModalProps<undefined, undefined> {
   message: string;
 }
 
-export const YesNoModal = (props: IYesNoModalProps) => {
+export function YesNoModal(props: IYesNoModalProps) {
   const { t } = useTranslation();
 
   return (
-    <Modal ref={props.modalRef}>
+    <Modal ref={props.modalRef} callback={props.callback}>
       <BecPanel header={props.title}>
         <p>{props.message}</p>
         <BecButtonRowContainer>
@@ -35,4 +35,4 @@ export const YesNoModal = (props: IYesNoModalProps) => {
       </BecPanel>
     </Modal>
   );
-};
+}

@@ -1,5 +1,4 @@
 import { Ref, useMemo, useState } from "react";
-import Modal from "../../../../playground/modals/Modal";
 import {
   ApplicationError,
   BecButton,
@@ -24,6 +23,7 @@ import {
   IBaseModalProps,
   ModalResult,
 } from "../../../../playground/modals/Types";
+import { Modal } from "../../../../playground/modals/Modal";
 
 // const orderInfoSchema = z.object({
 //   feedbackId: z
@@ -57,7 +57,7 @@ export interface OrderInfoResult {
 }
 
 interface IOrderInfoModalProps
-  extends IBaseModalProps<OrderInfoResult | undefined> {
+  extends IBaseModalProps<undefined, OrderInfoResult | undefined> {
   variant: Variant;
 }
 
@@ -124,7 +124,7 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
   };
 
   return (
-    <Modal ref={props.modalRef}>
+    <Modal ref={props.modalRef} callback={props.callback}>
       <form onSubmit={handleSubmit(formSubmitted, (e) => console.error(e))}>
         <BecPanel header={t("EnterOrderData")}>
           <BecFormInput<OrderInfoSchema>

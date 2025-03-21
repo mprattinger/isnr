@@ -9,12 +9,15 @@ import {
 } from "react";
 import { Variant } from "../models/Types";
 import { IPrepareDataResult } from "../components/PrepareData";
+import { SNRListEntry } from "../models/SNRListEntry";
 
 type SNRContextType = {
   variant: Variant;
   setVariant: Dispatch<SetStateAction<Variant>>;
   data: IPrepareDataResult | undefined;
   setData: Dispatch<SetStateAction<IPrepareDataResult | undefined>>;
+  snrList: SNRListEntry[];
+  setSnrList: Dispatch<SetStateAction<SNRListEntry[]>>;
 };
 
 export const SNRContext = createContext<SNRContextType>({} as SNRContextType);
@@ -27,6 +30,7 @@ interface ISNRContextProviderProps extends PropsWithChildren {
 export const SNRContextProvider = (props: ISNRContextProviderProps) => {
   const [variant, setVariant] = useState(props.variant);
   const [data, setData] = useState(props.data);
+  const [snrList, setSnrList] = useState<SNRListEntry[]>([]);
 
   useEffect(() => {
     setVariant(props.variant);
@@ -40,6 +44,8 @@ export const SNRContextProvider = (props: ISNRContextProviderProps) => {
         setVariant,
         data,
         setData,
+        snrList,
+        setSnrList,
       }}
     >
       {props.children}
@@ -48,12 +54,15 @@ export const SNRContextProvider = (props: ISNRContextProviderProps) => {
 };
 
 export const useSNRContext = () => {
-  const { variant, setVariant, data, setData } = useContext(SNRContext);
+  const { variant, setVariant, data, setData, snrList, setSnrList } =
+    useContext(SNRContext);
 
   return {
     variant,
     setVariant,
     data,
     setData,
+    snrList,
+    setSnrList,
   };
 };

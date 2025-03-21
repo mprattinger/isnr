@@ -7,6 +7,7 @@ import {
 import { ProfidApiBaseResponseModel } from "../models/ProfidApiBaseResponseModel";
 import { profidBaseApi } from "../../core/ProfidBaseApi";
 import { Variant } from "../../snr/models/Types";
+import { TranslateIBMDate } from "../../../utils/Tools";
 
 export const CheckFeedbackId = async (
   mandant: number,
@@ -123,7 +124,17 @@ export const CheckSnr = async (
       );
     }
 
-    return resp.data.data;
+    let d = resp.data.data;
+    d.children = d.children.map((x) => {
+      return {
+        childSnr: x.childSnr,
+        origin: x.origin,
+        datetime: x.datetime,
+        date: TranslateIBMDate(x.datetime),
+      };
+    });
+
+    return d;
   } catch (error) {
     let msg = error;
 
@@ -174,4 +185,5 @@ export interface SNRChildren {
   childSnr: string;
   origin: string;
   datetime: string;
+  date: Date;
 }

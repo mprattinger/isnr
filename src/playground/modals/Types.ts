@@ -1,7 +1,7 @@
 import { Ref } from "react";
 
-export type ModalHandle = {
-  open: () => void;
+export type ModalHandle<T> = {
+  open: (payload: T) => void;
   close: () => void;
 };
 
@@ -31,8 +31,8 @@ export class ModalResult<T> {
   }
 }
 
-export interface IBaseModalProps<T> {
-  modalRef: Ref<ModalHandle>;
+export interface IBaseModalProps<T, U> {
+  modalRef: Ref<ModalHandle<T>>;
   title?: string;
-  callback: (result: ModalResult<T>) => void;
+  callback: (result: ModalResult<U>) => void;
 }

@@ -1,6 +1,5 @@
 import { Ref, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import Modal from "../../../../playground/modals/Modal";
 import {
   ApplicationError,
   BecButton,
@@ -23,6 +22,7 @@ import {
   IBaseModalProps,
   ModalResult,
 } from "../../../../playground/modals/Types";
+import { Modal } from "../../../../playground/modals/Modal";
 
 // interface ISNRModalProps {
 //   modalRef: Ref<ModalHandle>;
@@ -30,7 +30,8 @@ import {
 //   onModalResult: (data: SNRCheckResponse) => void;
 //   onCancel: () => void;
 // }
-interface ISNRModalProps extends IBaseModalProps<SNRCheckResponse | undefined> {
+interface ISNRModalProps
+  extends IBaseModalProps<undefined, SNRCheckResponse | undefined> {
   variant: Variant;
 }
 
@@ -105,7 +106,7 @@ export const SNRModal = (props: ISNRModalProps) => {
   };
 
   return (
-    <Modal ref={props.modalRef}>
+    <Modal ref={props.modalRef} callback={props.callback}>
       <form onSubmit={handleSubmit(formSubmitted, (e) => console.error(e))}>
         <BecPanel header={title}>
           <BecFormInput<SNRSchema>

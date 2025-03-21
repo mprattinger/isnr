@@ -81,7 +81,6 @@ export const AppContextProvider = (props: IAppContextProviderProps) => {
 
   const subscribeToKeyEvent = (listenerInfo: IKeyListener) => {
     setKeyListeners((prev) => {
-      console.log(prev);
       return [...prev, listenerInfo];
     });
   };

@@ -16,5 +16,7 @@
   "MaxPackaging": "The box is full. Please save the packed ISNRs to start with a new box!",
   "MaxPackagingHeader": "Box is full",
   "MaxTool": "Nothing can be added to the device anymore. Please save the added serialnumbers and start with a new device!",
-  "MaxToolHeader": "Device full"
+  "MaxToolHeader": "Device full",
+  "DeleteISRNFromListHeader": "Delete serial number",
+  "DeleteISRNFromList":"Do you want to delete ISNR {0} from the list?"
 }

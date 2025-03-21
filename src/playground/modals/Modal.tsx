@@ -15,7 +15,7 @@ interface IModalProps<T> extends PropsWithChildren {
 export const ModalOpenEventName = "modalOpenEvent";
 export const ModalCloseEventName = "modalOpenEvent";
 export interface IModalOpenEventPayload<T> {
-  payload: T;
+  payload?: T;
 }
 
 const modalElement = document.getElementById("modal");
@@ -23,6 +23,7 @@ const modalElement = document.getElementById("modal");
 export function Modal<T>(props: IModalProps<T>) {
   const [isOpen, setIsOpen] = useState(props.defaultOpened ?? false);
 
+  //TODO: Make open possible without parameter
   useImperativeHandle(
     props.ref,
     () => ({

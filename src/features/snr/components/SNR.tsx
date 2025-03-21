@@ -12,11 +12,11 @@ import {
   ApplicationErrorFactory,
 } from "bec-react-components";
 import { useAppData } from "../../../contexts/AppContext";
-import { OkModal } from "../../../playground/modals/OkModal";
 import { useTranslation } from "react-i18next";
-import { ModalHandle } from "../../../playground/modals/Types";
 import { v7 } from "uuid";
 import { ReOrgSNRList } from "../utils/Tools";
+import { OkModal } from "../../../playground/modals/OkModal";
+import { ModalHandle } from "../../../playground/modals/Types";
 
 interface ISNRProps {
   // onNewSnr: (snr: string) => Promise<void>;
@@ -31,7 +31,7 @@ export const SNR = (props: ISNRProps) => {
 
   const { t } = useTranslation();
 
-  // const boxFullModal = useRef<ModalHandle>(null);
+  const boxFullModal = useRef<ModalHandle<undefined>>(null);
 
   const [boxFullTitle, setBoxFullTitle] = useState("");
   const [boxFullText, setBoxFullText] = useState("");
@@ -98,7 +98,7 @@ export const SNR = (props: ISNRProps) => {
       variant === Variant.PACKAGING
     ) {
       //Inform user, that the package size exceeds the max
-      boxFullModal.current?.open();
+      boxFullModal.current?.open(undefined);
       return;
     }
     //Check Serial number
@@ -167,12 +167,12 @@ export const SNR = (props: ISNRProps) => {
           />
         ))}
       </SNRList>
-      {/* <OkModal
+      <OkModal
         modalRef={boxFullModal}
         title={boxFullTitle}
         message={boxFullText}
         callback={handleBoxFull}
-      /> */}
+      />
     </>
   );
 };

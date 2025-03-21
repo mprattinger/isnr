@@ -1,13 +1,13 @@
 import { IBaseModalProps, ModalResult } from "./Types";
-import Modal from "./Modal";
 import {
   BecButton,
   BecButtonRowContainer,
   BecPanel,
 } from "bec-react-components";
 import { useTranslation } from "react-i18next";
+import { Modal } from "./Modal";
 
-interface IOkModalProps extends IBaseModalProps<undefined> {
+interface IOkModalProps extends IBaseModalProps<undefined, undefined> {
   message: string;
 }
 

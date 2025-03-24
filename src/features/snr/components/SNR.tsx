@@ -23,6 +23,7 @@ interface ISNRProps {
   boxSNR: string;
   boxSize: number;
   prevSnrs: SNRListEntry[];
+  onModified: (modifier: number) => void;
 }
 
 export const SNR = (props: ISNRProps) => {
@@ -131,6 +132,8 @@ export const SNR = (props: ISNRProps) => {
       current.push(entry);
       return [...current];
     });
+
+    props.onModified(1);
   };
 
   const handleModified = (snr: SNRListEntry) => {
@@ -146,7 +149,19 @@ export const SNR = (props: ISNRProps) => {
     });
   };
 
-  const handleDelete = (snr: SNRListEntry) => {};
+  const handleDelete = (snr: SNRListEntry) => {
+    setSnrList((prev) => {
+      let list = [...prev];
+      const idy = list.findIndex((x) => x.id === snr.id);
+      list[idy].state = SNRListEntryState.REMOVED;
+
+      //Nun die die Liste überarbeiten
+      const newList = ReOrgSNRList(list);
+
+      return [...newList];
+    });
+    props.onModified(-1);
+  };
 
   const handleBoxFull = () => {};
 

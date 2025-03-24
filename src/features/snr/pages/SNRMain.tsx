@@ -3,8 +3,6 @@ import { useAppData } from "../../../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SNRListEntryState, SnrOrigin, Variant } from "../models/Types";
 import {
-  ApplicationError,
-  ApplicationErrorFactory,
   BecButton,
   BecButtonRowContainer,
   BecPanel,
@@ -18,9 +16,6 @@ import { SNRContextProvider, useSNRContext } from "../contexts/SNRContext";
 import { SNR } from "../components/SNR";
 import { IPrepareDataResult, PrepareData } from "../components/PrepareData";
 import { SNRListEntry } from "../models/SNRListEntry";
-import { ModalHandle } from "../../../playground/modals/Types";
-import { OkModal } from "../../../playground/modals/OkModal";
-import { CheckSnr } from "../services/SNRService";
 import { v7 } from "uuid";
 
 export const SNRMain = () => {
@@ -30,12 +25,14 @@ export const SNRMain = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [isDiry, setIsDirty] = useState(false);
   const [pageReady, setPageReady] = useState(false); //When all data is loaded, the page is ready for display
   const [canPrint, setCanPrint] = useState(false);
   const [canSave, setCanSave] = useState(false);
   const [prepareData, setPrepareData] = useState<IPrepareDataResult>();
   const [variant, setVariant] = useState(Variant.UNKNOWN);
   const [snrList, setSnrList] = useState<SNRListEntry[]>([]);
+  const [workCount, setWorkCount] = useState<number>(0);
 
   useEffect(() => {
     setProgramInfo((prev) => ({ ...prev, screen: "2" }));
@@ -46,79 +43,21 @@ export const SNRMain = () => {
     }
   }, []);
 
-  const handleNewSNR = async (snr: string) => {
-    //   let entry = {} as SNRListEntry;
-    //   entry.serialnumber = snr;
-    //   let current = [...snrList];
-    //   if (variant !== Variant.FEEDBACK && snr === prepareData?.snr.snr) {
-    //     entry.state = SNRListEntryState.IS_BOX_SNR;
-    //     setSnrList((prev) => {
-    //       current = [...prev];
-    //       current.push(entry);
-    //       return [...current];
-    //     });
-    //   }
-    //   if (
-    //     current
-    //       .filter((x) => x.state !== SNRListEntryState.REMOVED)
-    //       .some((x) => x.serialnumber === snr)
-    //   ) {
-    //     //SNR already in the list
-    //     entry.state = SNRListEntryState.DUPLICATE;
-    //     setSnrList((prev) => {
-    //       current = [...prev];
-    //       current.push(entry);
-    //       return [...current];
-    //     });
-    //     return;
-    //   }
-    //   const packageSize = parseInt(prepareData?.feedback?.pack ?? "0");
-    //   const cnt = current.filter(
-    //     (x) =>
-    //       x.state === SNRListEntryState.ADDED ||
-    //       x.state === SNRListEntryState.EXISTING ||
-    //       x.state === SNRListEntryState.MODIFIED
-    //   ).length;
-    //   if (
-    //     packageSize > 0 &&
-    //     cnt === packageSize &&
-    //     variant === Variant.PACKAGING
-    //   ) {
-    //     //TInform user, that the package size exceeds the max
-    //     boxFullModal.current?.open();
-    //     return;
-    //   }
-    //   //Check Serial number
-    //   const checkResult = await CheckSnr(btrm, snr, variant);
-    //   if (checkResult instanceof ApplicationError) {
-    //     entry.state = SNRListEntryState.ERROR;
-    //     entry.errorMsg = checkResult.message;
-    //     setSnrList((prev) => {
-    //       current = [...prev];
-    //       current.push(entry);
-    //       return [...current];
-    //     });
-    //     return;
-    //   }
-    //   if (
-    //     variant === Variant.EXTSNR &&
-    //     checkResult.snrOrigin !== SnrOrigin.EXTERNAL
-    //   ) {
-    //     const error = ApplicationErrorFactory(
-    //       "SNR.SNR_NOT_EXTERN",
-    //       t("SNR_NOT_EXTERN")
-    //     );
-    //     setError(error);
-    //     return;
-    //   }
-    //   entry.state = SNRListEntryState.ADDED;
-    //   entry.origin = checkResult.snrOrigin;
-    //   setSnrList((prev) => {
-    //     current = [...prev];
-    //     current.push(entry);
-    //     return [...current];
-    //   });
-  };
+  useEffect(() => {
+    if (workCount !== 0) {
+      setIsDirty(true);
+      return;
+    }
+    setIsDirty(false);
+  }, [workCount]);
+
+  useEffect(() => {
+    if (isDiry) {
+      setCanSave(true);
+      return;
+    }
+    setCanSave(false);
+  }, [isDiry]);
 
   const handleResult = (data: IPrepareDataResult) => {
     setPrepareData(data);
@@ -145,6 +84,10 @@ export const SNRMain = () => {
     navigate("/");
   };
 
+  const handleModifiedWorkCount = (modifier: number) => {
+    setWorkCount((prev) => prev + modifier);
+  };
+
   return (
     <>
       {pageReady ? (
@@ -159,6 +102,7 @@ export const SNRMain = () => {
                 prevSnrs={snrList}
                 boxSNR={prepareData?.snr.snr ?? ""}
                 boxSize={parseInt(prepareData?.feedback.pack ?? "0")}
+                onModified={handleModifiedWorkCount}
               />
             </BecPanel>
             <BecPanel>

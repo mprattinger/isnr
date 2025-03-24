@@ -11,6 +11,11 @@ export const ReOrgSNRList = (currentList: SNRListEntry[]): SNRListEntry[] => {
       continue;
     }
 
+    if (itm.state === SNRListEntryState.EXISTING) {
+      ret.push(itm);
+      continue;
+    }
+
     if (ret.some((x) => x.serialnumber === itm.serialnumber)) {
       itm.state = SNRListEntryState.DUPLICATE;
       ret.push(itm);

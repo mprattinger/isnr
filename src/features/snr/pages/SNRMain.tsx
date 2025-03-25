@@ -54,12 +54,16 @@ export const SNRMain = () => {
   }, []);
 
   useEffect(() => {
-    if (workCount !== 0) {
-      setIsDirty(true);
-      return;
-    }
-    setIsDirty(false);
-  }, [workCount]);
+    const listModified = snrList.some(
+      (x) =>
+        x.state === SNRListEntryState.ADDED ||
+        x.state === SNRListEntryState.MODIFIED ||
+        x.state === SNRListEntryState.DUPLICATE ||
+        x.state === SNRListEntryState.IS_BOX_SNR ||
+        x.state === SNRListEntryState.ERROR
+    );
+    setIsDirty(listModified || timerActive);
+  }, [snrList, timerActive]);
 
   //Checking if the Save Button should be shown
   //Its dependend of the dirty state

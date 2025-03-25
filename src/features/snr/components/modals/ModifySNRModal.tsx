@@ -13,6 +13,7 @@ import {
 } from "../../../../playground/modals/Modal";
 import {
   IBaseModalProps,
+  ModalHandle,
   ModalResult,
 } from "../../../../playground/modals/Types";
 import { SNRListEntry } from "../../models/SNRListEntry";
@@ -20,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { CheckSnr } from "../../services/SNRService";
 import { SnrOrigin } from "../../models/Types";
 import { useAppData } from "../../../../contexts/AppContext";
@@ -31,12 +32,11 @@ const modifySchema = z.object({
 });
 type ModifySchema = z.infer<typeof modifySchema>;
 
-interface IModifySNRModalProps<T>
-  extends IBaseModalProps<T, SNRListEntry | undefined> {
+interface IModifySNRModalProps extends IBaseModalProps<string, SNRListEntry> {
   snr: SNRListEntry;
 }
 
-export function ModifySNRModal<T>(props: IModifySNRModalProps<T>) {
+export function ModifySNRModal(props: IModifySNRModalProps) {
   const { t } = useTranslation();
   const { btrm } = useAppData();
   const { variant } = useSNRContext();
@@ -88,17 +88,25 @@ export function ModifySNRModal<T>(props: IModifySNRModalProps<T>) {
     newSnr.serialnumber = d.snr;
     newSnr.origin = checkResult.snrOrigin ?? SnrOrigin.UNKNOWN;
 
-    props.callback(ModalResult.OkWithData(newSnr));
+    const ref = props.modalRef as RefObject<ModalHandle<string, SNRListEntry>>;
+    if (ref.current) {
+      ref.current.action(ModalResult.OkWithData(newSnr));
+    }
+  };
+
+  const handleCancelClicked = () => {
+    const ref = props.modalRef as RefObject<
+      ModalHandle<string, SNRListEntry | undefined>
+    >;
+    reset();
+
+    if (ref.current) {
+      ref.current.action(ModalResult.Cancel());
+    }
   };
 
   return (
-    <Modal
-      ref={props.modalRef}
-      callback={() => {
-        reset();
-        props.callback;
-      }}
-    >
+    <Modal ref={props.modalRef}>
       <form onSubmit={handleSubmit(formSubmitted, (e) => console.error(e))}>
         <BecPanel header={t("profid:43471")}>
           <BecFormInput<ModifySchema>
@@ -113,13 +121,7 @@ export function ModifySNRModal<T>(props: IModifySNRModalProps<T>) {
             <BecButton type="submit" variant={"orange"}>
               {t("profid:900001402")}
             </BecButton>
-            <BecButton
-              variant={"orange"}
-              onClick={() => {
-                reset();
-                props.callback(ModalResult.Cancel());
-              }}
-            >
+            <BecButton variant={"orange"} onClick={handleCancelClicked}>
               {t("profid:900002541")}
             </BecButton>
           </BecButtonRowContainer>

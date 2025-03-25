@@ -1,11 +1,11 @@
 import { Ref } from "react";
 
-export type ModalHandle<T = undefined> = {
-  open: (payload?: T) => void;
-  close: () => void;
+export type ModalHandle<T = undefined, U = undefined> = {
+  open: (payload?: T) => Promise<ModalResult<U | undefined>>;
+  action: (payload: ModalResult<U>) => void;
 };
 
-export class ModalResult<T> {
+export class ModalResult<T = undefined> {
   cancelled: boolean;
   data?: T;
 
@@ -14,7 +14,7 @@ export class ModalResult<T> {
     this.data = data;
   }
 
-  static Ok(): ModalResult<undefined> {
+  static Ok(): ModalResult {
     return new ModalResult(false);
   }
 
@@ -22,7 +22,7 @@ export class ModalResult<T> {
     return new ModalResult(false, data);
   }
 
-  static Cancel(): ModalResult<undefined> {
+  static Cancel(): ModalResult {
     return new ModalResult(true);
   }
 
@@ -31,8 +31,7 @@ export class ModalResult<T> {
   }
 }
 
-export interface IBaseModalProps<T, U> {
-  modalRef: Ref<ModalHandle<T>>;
+export interface IBaseModalProps<T = undefined, U = undefined> {
+  modalRef: Ref<ModalHandle<T, U>>;
   title?: string;
-  callback: (result: ModalResult<U>) => void;
 }

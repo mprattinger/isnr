@@ -1,4 +1,4 @@
-import { Ref, useMemo, useState } from "react";
+import { Ref, RefObject, useMemo, useState } from "react";
 import {
   ApplicationError,
   BecButton,
@@ -21,35 +21,10 @@ import { useAppData } from "../../../../contexts/AppContext";
 import { Variant } from "../../models/Types";
 import {
   IBaseModalProps,
+  ModalHandle,
   ModalResult,
 } from "../../../../playground/modals/Types";
 import { Modal } from "../../../../playground/modals/Modal";
-
-// const orderInfoSchema = z.object({
-//   feedbackId: z
-//     .string({
-//       required_error: "Missing",
-//       message: "asdfaf",
-//     })
-//     .min(1, { message: "dafdasfasf" }),
-//   employeeId: z
-//     .preprocess((a) => parseInt(z.string().parse(a), 10), z.number())
-//     .refine(async (value) => {}),
-// });
-
-// .refine(
-//   (v) => {
-//     if (v === 1234) {
-//       throw "asfjkasfj";
-//     }
-//     if (v !== 5555) {
-//       return false;
-//     }
-
-//     return true;
-//   },
-//   { message: "Not 5555" }
-// )
 
 export interface OrderInfoResult {
   feedback: FeedbackIdCheckResponse;
@@ -57,7 +32,7 @@ export interface OrderInfoResult {
 }
 
 interface IOrderInfoModalProps
-  extends IBaseModalProps<undefined, OrderInfoResult | undefined> {
+  extends IBaseModalProps<undefined, OrderInfoResult> {
   variant: Variant;
 }
 
@@ -111,20 +86,30 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
       return;
     }
 
-    // props.onModalResult({
-    //   feedback: feedbackResult,
-    //   employee: employeeResult,
-    // } as OrderInfoResult);
-    props.callback(
-      ModalResult.OkWithData({
-        feedback: feedbackResult,
-        employee: employeeResult,
-      } as OrderInfoResult)
-    );
+    const ref = props.modalRef as RefObject<
+      ModalHandle<undefined, OrderInfoResult>
+    >;
+    if (ref.current) {
+      ref.current.action(
+        ModalResult.OkWithData({
+          feedback: feedbackResult,
+          employee: employeeResult,
+        } as OrderInfoResult)
+      );
+    }
+  };
+
+  const handleCancelClicked = () => {
+    const ref = props.modalRef as RefObject<
+      ModalHandle<undefined, OrderInfoResult | undefined>
+    >;
+    if (ref.current) {
+      ref.current.action(ModalResult.Cancel());
+    }
   };
 
   return (
-    <Modal ref={props.modalRef} callback={props.callback}>
+    <Modal ref={props.modalRef}>
       <form onSubmit={handleSubmit(formSubmitted, (e) => console.error(e))}>
         <BecPanel header={t("EnterOrderData")}>
           <BecFormInput<OrderInfoSchema>
@@ -147,10 +132,7 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
             <BecButton type="submit" variant={"orange"}>
               {t("profid:900001402")}
             </BecButton>
-            <BecButton
-              variant={"orange"}
-              onClick={() => props.callback(ModalResult.Cancel())}
-            >
+            <BecButton variant={"orange"} onClick={handleCancelClicked}>
               {t("profid:900002541")}
             </BecButton>
           </BecButtonRowContainer>

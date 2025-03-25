@@ -21,7 +21,7 @@ interface ISNRItemProps {
 export const SNRItem = (props: ISNRItemProps) => {
   const { t } = useTranslation();
 
-  const modifyPopup = useRef<ModalHandle<string>>(null);
+  const modifyPopup = useRef<ModalHandle<string, SNRListEntry>>(null);
   const deletePopup = useRef<ModalHandle>(null);
 
   const itemTooltip = (): string => {
@@ -72,35 +72,27 @@ export const SNRItem = (props: ISNRItemProps) => {
     return "";
   };
 
-  const handleAction = (action: ActionType) => {
+  const handleAction = async (action: ActionType) => {
     if (action === "MODIFY") {
-      modifyPopup.current?.open(props.snr?.serialnumber ?? "");
+      const res = await modifyPopup.current?.open(
+        props.snr?.serialnumber ?? ""
+      );
+      if (res === undefined || res?.cancelled || res?.data === undefined) {
+        return;
+      }
+      props.onSNRModified(res.data);
     } else {
-      deletePopup.current?.open();
-    }
-  };
+      const res = await deletePopup.current?.open();
+      if (res === undefined || res?.cancelled) {
+        return;
+      }
 
-  const handleModifyCallback = (
-    result: ModalResult<SNRListEntry | undefined>
-  ) => {
-    modifyPopup.current?.close();
+      if (props.snr) {
+        props.snr.state = SNRListEntryState.REMOVED;
 
-    if (result.cancelled) return;
-
-    props.onSNRModified(result.data!);
-  };
-
-  const handleDeleteCallback = (result: ModalResult<undefined>) => {
-    deletePopup.current?.close();
-
-    //No pressed
-    if (result.cancelled) return;
-
-    if (props.snr) {
-      props.snr.state = SNRListEntryState.REMOVED;
-
-      //Notify parent
-      props.onSNRDeleted(props.snr);
+        //Notify parent
+        props.onSNRDeleted(props.snr);
+      }
     }
   };
 
@@ -130,11 +122,7 @@ export const SNRItem = (props: ISNRItemProps) => {
       </div>
       {props.snr && (
         <>
-          <ModifySNRModal<string>
-            modalRef={modifyPopup}
-            callback={handleModifyCallback}
-            snr={props.snr}
-          />
+          <ModifySNRModal modalRef={modifyPopup} snr={props.snr} />
           <YesNoModal
             modalRef={deletePopup}
             title={t("DeleteISRNFromListHeader")}
@@ -142,7 +130,6 @@ export const SNRItem = (props: ISNRItemProps) => {
               t("DeleteISRNFromList"),
               props.snr.serialnumber
             )}
-            callback={handleDeleteCallback}
           />
         </>
       )}

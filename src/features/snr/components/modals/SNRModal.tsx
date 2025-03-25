@@ -1,4 +1,4 @@
-import { Ref, useEffect, useMemo, useState } from "react";
+import { Ref, RefObject, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import {
   ApplicationError,
@@ -20,18 +20,12 @@ import {
 } from "../../../common/services/ProfidGenericService";
 import {
   IBaseModalProps,
+  ModalHandle,
   ModalResult,
 } from "../../../../playground/modals/Types";
 import { Modal } from "../../../../playground/modals/Modal";
 
-// interface ISNRModalProps {
-//   modalRef: Ref<ModalHandle>;
-//   variant: Variant;
-//   onModalResult: (data: SNRCheckResponse) => void;
-//   onCancel: () => void;
-// }
-interface ISNRModalProps
-  extends IBaseModalProps<undefined, SNRCheckResponse | undefined> {
+interface ISNRModalProps extends IBaseModalProps<undefined, SNRCheckResponse> {
   variant: Variant;
 }
 
@@ -102,11 +96,23 @@ export const SNRModal = (props: ISNRModalProps) => {
       return;
     }
 
-    props.callback(ModalResult.OkWithData(snrCheckResult));
+    const ref = props.modalRef as RefObject<
+      ModalHandle<undefined, SNRCheckResponse | undefined>
+    >;
+    ref.current.action(ModalResult.OkWithData(snrCheckResult));
+  };
+
+  const handleCancelClicked = () => {
+    const ref = props.modalRef as RefObject<
+      ModalHandle<undefined, SNRCheckResponse | undefined>
+    >;
+    if (ref.current) {
+      ref.current.action(ModalResult.Cancel());
+    }
   };
 
   return (
-    <Modal ref={props.modalRef} callback={props.callback}>
+    <Modal ref={props.modalRef}>
       <form onSubmit={handleSubmit(formSubmitted, (e) => console.error(e))}>
         <BecPanel header={title}>
           <BecFormInput<SNRSchema>
@@ -127,10 +133,7 @@ export const SNRModal = (props: ISNRModalProps) => {
             <BecButton type="submit" variant={"orange"}>
               {t("profid:900001402")}
             </BecButton>
-            <BecButton
-              variant={"orange"}
-              onClick={() => props.callback(ModalResult.Cancel())}
-            >
+            <BecButton variant={"orange"} onClick={handleCancelClicked}>
               {t("profid:900002541")}
             </BecButton>
           </BecButtonRowContainer>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Variant } from "../models/Types";
 import { OrderInfoModal, OrderInfoResult } from "./modals/OrderInfoModal";
 import {
@@ -7,7 +7,7 @@ import {
   SNRCheckResponse,
 } from "../../common/services/ProfidGenericService";
 import { SNRModal } from "./modals/SNRModal";
-import { ModalHandle, ModalResult } from "../../../playground/modals/Types";
+import { ModalHandle } from "../../../playground/modals/Types";
 
 export interface IPrepareDataResult {
   feedback: FeedbackIdCheckResponse;
@@ -21,76 +21,42 @@ interface IPrepareDataProps {
   onCancel: () => void;
 }
 export const PrepareData = (props: IPrepareDataProps) => {
-  const [response, SetResponse] = useState<IPrepareDataResult>(
-    {} as IPrepareDataResult
-  );
-
-  const orderInfoModal = useRef<ModalHandle>(null);
-  const snrModal = useRef<ModalHandle>(null);
+  const orderInfoModal = useRef<ModalHandle<undefined, OrderInfoResult>>(null);
+  const snrModal = useRef<ModalHandle<undefined, SNRCheckResponse>>(null);
 
   useEffect(() => {
+    let data = {} as IPrepareDataResult;
     //Ask User for data
     //1. Order information
-    orderInfoModal.current?.open();
+    const askUser = async () => {
+      const info = await orderInfoModal.current?.open();
+      if (info === undefined || info?.cancelled || info?.data === undefined) {
+        props.onCancel();
+      }
+
+      data = {
+        ...data,
+        feedback: info!.data!.feedback,
+        employee: info!.data!.employee,
+      };
+
+      //2. Check SNR or create a new one
+      const snr = await snrModal.current?.open();
+      if (snr === undefined || snr?.cancelled || snr?.data === undefined) {
+        props.onCancel();
+      }
+
+      data = { ...data, snr: snr!.data! };
+      props.onResult(data);
+    };
+
+    askUser();
   }, []);
-
-  // const handleSNRResult = (data: SNRCheckResponse) => {
-  //   const ret = { ...response, snr: data };
-  //   snrModal.current?.close();
-  //   props.onResult(ret);
-  // };
-
-  // const handleOrderInfoCanceled = () => {
-  //   props.onCancel();
-  // };
-  // const handleSnrCanceled = () => {
-  //   props.onCancel();
-  // };
-
-  const orderInfoCallback = (
-    result: ModalResult<OrderInfoResult | undefined>
-  ) => {
-    orderInfoModal.current?.close();
-
-    if (result.cancelled || result.data === undefined) {
-      props.onCancel();
-      return;
-    }
-
-    SetResponse((prev) => ({
-      ...prev,
-      feedback: result.data!.feedback,
-      employee: result.data!.employee,
-    }));
-
-    //2. Check SNR or create a new one
-    snrModal.current?.open();
-  };
-
-  const snrCallback = (result: ModalResult<SNRCheckResponse | undefined>) => {
-    snrModal.current?.close();
-
-    if (result.cancelled || result.data === undefined) {
-      props.onCancel();
-      return;
-    }
-
-    const ret = { ...response, snr: result.data! };
-    props.onResult(ret);
-  };
 
   return (
     <>
-      <OrderInfoModal
-        modalRef={orderInfoModal}
-        variant={props.variant}
-        callback={orderInfoCallback}
-      />
-      <SNRModal
-        modalRef={snrModal}
-        variant={props.variant}
-        callback={snrCallback}
-      />
+      <OrderInfoModal modalRef={orderInfoModal} variant={props.variant} />
+      <SNRModal modalRef={snrModal} variant={props.variant} />
     </>
   );
 };

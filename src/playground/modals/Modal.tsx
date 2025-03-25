@@ -1,15 +1,15 @@
 import {
   PropsWithChildren,
-  useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { ModalHandle, ModalResult } from "./Types";
-interface IModalProps<T> extends PropsWithChildren {
+
+interface IModalProps<T, U> extends PropsWithChildren {
   defaultOpened?: boolean;
-  ref: React.Ref<ModalHandle<T>>;
-  callback: (result: ModalResult<undefined>) => void;
+  ref: React.Ref<ModalHandle<T, U>>;
 }
 
 export const ModalOpenEventName = "modalOpenEvent";
@@ -20,10 +20,11 @@ export interface IModalOpenEventPayload<T> {
 
 const modalElement = document.getElementById("modal");
 
-export function Modal<T>(props: IModalProps<T>) {
+export function Modal<T, U>(props: IModalProps<T, U>) {
   const [isOpen, setIsOpen] = useState(props.defaultOpened ?? false);
 
-  //TODO: Make open possible without parameter
+  const promiseRef = useRef<(value: ModalResult<U | undefined>) => void>(null);
+
   useImperativeHandle(
     props.ref,
     () => ({
@@ -36,15 +37,27 @@ export function Modal<T>(props: IModalProps<T>) {
           }
         );
         window.dispatchEvent(modalToggleEvent);
+        return new Promise<ModalResult<U | undefined>>((resolve) => {
+          promiseRef.current = resolve;
+        });
       },
-      close: () => {
+      action: (payload: ModalResult<U>) => {
         setIsOpen(false);
-        const modalToggleEvent = new Event(ModalCloseEventName);
-        window.dispatchEvent(modalToggleEvent);
+        if (promiseRef.current) {
+          promiseRef.current(payload);
+        }
       },
     }),
     [close]
   );
+
+  const handleCancelClick = () => {
+    setIsOpen(false);
+    if (promiseRef.current) {
+      const res = ModalResult.Cancel();
+      promiseRef.current(res);
+    }
+  };
 
   return createPortal(
     // <ModalContextProvider isOpen={isOpen}>
@@ -54,7 +67,7 @@ export function Modal<T>(props: IModalProps<T>) {
           <div className="flex flex-col w-96 relative">
             <div
               className="cursor-pointer text-xl hover:font-bold absolute right-3 top-2"
-              onClick={() => props.callback(ModalResult.Cancel())}
+              onClick={handleCancelClick}
             >
               X
             </div>

@@ -3,32 +3,41 @@ import {
   BecButtonRowContainer,
   BecPanel,
 } from "bec-react-components";
-import { IBaseModalProps, ModalResult } from "./Types";
+import { IBaseModalProps, ModalHandle, ModalResult } from "./Types";
 import { useTranslation } from "react-i18next";
 import { Modal } from "./Modal";
+import { RefObject } from "react";
 
-interface IYesNoModalProps extends IBaseModalProps<undefined, undefined> {
+interface IYesNoModalProps extends IBaseModalProps {
   message: string;
 }
 
 export function YesNoModal(props: IYesNoModalProps) {
   const { t } = useTranslation();
 
+  const handleYesClicked = () => {
+    const ref = props.modalRef as RefObject<ModalHandle>;
+    if (ref.current) {
+      ref.current.action(ModalResult.Ok());
+    }
+  };
+
+  const handleNoClicked = () => {
+    const ref = props.modalRef as RefObject<ModalHandle>;
+    if (ref.current) {
+      ref.current.action(ModalResult.Cancel());
+    }
+  };
+
   return (
-    <Modal ref={props.modalRef} callback={props.callback}>
+    <Modal ref={props.modalRef}>
       <BecPanel header={props.title}>
         <p>{props.message}</p>
         <BecButtonRowContainer>
-          <BecButton
-            variant={"orange"}
-            onClick={() => props.callback(ModalResult.Ok())}
-          >
+          <BecButton variant={"orange"} onClick={handleYesClicked}>
             {t("profid:15561")}
           </BecButton>
-          <BecButton
-            variant={"orange"}
-            onClick={() => props.callback(ModalResult.Cancel())}
-          >
+          <BecButton variant={"orange"} onClick={handleNoClicked}>
             {t("profid:38191")}
           </BecButton>
         </BecButtonRowContainer>

@@ -17,6 +17,7 @@ import { SNR } from "../components/SNR";
 import { IPrepareDataResult, PrepareData } from "../components/PrepareData";
 import { SNRListEntry } from "../models/SNRListEntry";
 import { v7 } from "uuid";
+import logger from "../../../utils/Logger";
 
 export const SNRMain = () => {
   const { setProgramInfo, btrm, setError } = useAppData();
@@ -33,12 +34,21 @@ export const SNRMain = () => {
   const [variant, setVariant] = useState(Variant.UNKNOWN);
   const [snrList, setSnrList] = useState<SNRListEntry[]>([]);
   const [workCount, setWorkCount] = useState<number>(0);
+  const [timerActive, setTimerActive] = useState(false);
 
+  //Initialization
   useEffect(() => {
+    logger.debug("Initializing SRNMain...");
     setProgramInfo((prev) => ({ ...prev, screen: "2" }));
+
+    logger.debug(`The page is called with variant ${location.state}`);
     setVariant(location.state as Variant);
 
+    logger.debug(
+      `Checking if the order info and snr data is already loaded...`
+    );
     if (typeof prepareData !== "undefined") {
+      logger.debug(`Data is already loaded, page can be shown`);
       setPageReady(true);
     }
   }, []);
@@ -51,6 +61,8 @@ export const SNRMain = () => {
     setIsDirty(false);
   }, [workCount]);
 
+  //Checking if the Save Button should be shown
+  //Its dependend of the dirty state
   useEffect(() => {
     if (isDiry) {
       setCanSave(true);
@@ -88,6 +100,10 @@ export const SNRMain = () => {
     setWorkCount((prev) => prev + modifier);
   };
 
+  const handleTimerModified = (action: string) => {
+    setTimerActive(action === "START");
+  };
+
   return (
     <>
       {pageReady ? (
@@ -95,7 +111,7 @@ export const SNRMain = () => {
           <BecPanelContainer>
             <BecPanelRowContainer>
               <OrderInfo />
-              <FeedbackTimer />
+              <FeedbackTimer ontimerModified={handleTimerModified} />
             </BecPanelRowContainer>
             <BecPanel header={t("profid:24751")}>
               <SNR

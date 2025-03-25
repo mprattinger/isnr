@@ -98,7 +98,7 @@ export const CheckSnr = async (
   variant: Variant,
   snr?: string
 ) => {
-  let url = `profidgen/seriennr?mand=${mandant}&type=${variant}`;
+  let url = `profidgen/seriennr?mand=${mandant}&variant=${variant}`;
   if (snr && snr !== "") {
     url = `${url}&snr=${snr}`;
   }

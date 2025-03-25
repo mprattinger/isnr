@@ -9,7 +9,11 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSNRContext } from "../contexts/SNRContext";
 
-export const FeedbackTimer = () => {
+interface IFeedbackTimerProps {
+  ontimerModified: (mode: string) => void;
+}
+
+export const FeedbackTimer = (props: IFeedbackTimerProps) => {
   const { t } = useTranslation();
 
   const [startBtnText, setStartBtnText] = useState(t("profid:900002481"));
@@ -30,7 +34,21 @@ export const FeedbackTimer = () => {
 
   const [timer, setTimer] = useState(false);
 
-  const { data } = useSNRContext();
+  const {
+    data,
+    alreadyWorked,
+    setAlreadyWorked,
+    alreadyEquiped,
+    setAlreadyEquiped,
+    alreadyPaused,
+    setAlreadyPaused,
+  } = useSNRContext();
+
+  useEffect(() => {
+    if (data === null) return;
+
+    data?.feedback.istZeit;
+  }, [data?.feedback]);
 
   const handleStart = () => {
     const wasAct = workingActive;
@@ -41,9 +59,8 @@ export const FeedbackTimer = () => {
       setWorkingActive(true);
       setWorkStarted(new Date());
 
-      //TODO: Start timer
       setTimer(true);
-      //TODO: Notify other components
+      props.ontimerModified("START");
 
       setStartBtnText(t("profid:26141"));
     }
@@ -58,9 +75,8 @@ export const FeedbackTimer = () => {
       setEquipActive(true);
       setEquipStarted(new Date());
 
-      //TODO: Start timer
       setTimer(true);
-      //TODO: Notify other components
+      props.ontimerModified("START");
 
       setEquipBtnText(t("profid:26141"));
     }
@@ -75,9 +91,8 @@ export const FeedbackTimer = () => {
       setPauseActive(true);
       setPauseStarted(new Date());
 
-      //TODO: Start timer
       setTimer(true);
-      //TODO: Notify other components
+      props.ontimerModified("START");
 
       setPauseBtnText(t("profid:26141"));
     }
@@ -87,7 +102,7 @@ export const FeedbackTimer = () => {
   const prepare = () => {
     setTimer(false);
 
-    //TODO: Notify other components
+    props.ontimerModified("STOP");
 
     setStartBtnText(t("profid:900002481"));
     setEquipBtnText(t("profid:900002491"));
@@ -95,17 +110,32 @@ export const FeedbackTimer = () => {
 
     //Calculation
     if (workingActive) {
-      //TODO: Update data
+      //Update data
+      //Die bisherige erfasste Zeit ist im context gespeichert
+      const diff = new Date().getTime() - workStarted.getTime();
+      const newValue = alreadyWorked + diff;
+      setWorkedMS(newValue);
+      setAlreadyWorked(newValue);
 
       setWorkStarted(new Date(0));
     }
     if (equipActive) {
-      //TODO: Update data
+      //Update data
+      //Die bisherige erfasste Zeit ist im context gespeichert
+      const diff = new Date().getTime() - equipStarted.getTime();
+      const newValue = alreadyEquiped + diff;
+      setWorkedMS(newValue);
+      setAlreadyEquiped(newValue);
 
       setEquipStarted(new Date(0));
     }
     if (pauseActive) {
-      //TODO: Update data
+      //Update data
+      //Die bisherige erfasste Zeit ist im context gespeichert
+      const diff = new Date().getTime() - pauseStarted.getTime();
+      const newValue = alreadyPaused + diff;
+      setPausedMS(newValue);
+      setAlreadyPaused(newValue);
 
       setPauseStarted(new Date(0));
     }

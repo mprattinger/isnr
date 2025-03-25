@@ -12,7 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { OrderInfo } from "../components/OrderInfo";
 import { FeedbackTimer } from "../components/FeedbackTimer";
-import { SNRContextProvider, useSNRContext } from "../contexts/SNRContext";
+import { SNRContextProvider } from "../contexts/SNRContext";
 import { SNR } from "../components/SNR";
 import { IPrepareDataResult, PrepareData } from "../components/PrepareData";
 import { SNRListEntry } from "../models/SNRListEntry";
@@ -26,7 +26,7 @@ export const SNRMain = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [isDiry, setIsDirty] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const [pageReady, setPageReady] = useState(false); //When all data is loaded, the page is ready for display
   const [canPrint, setCanPrint] = useState(false);
   const [canSave, setCanSave] = useState(false);
@@ -66,14 +66,27 @@ export const SNRMain = () => {
   }, [snrList, timerActive]);
 
   //Checking if the Save Button should be shown
+  //Checking if the Print Button should be shown
   //Its dependend of the dirty state
   useEffect(() => {
-    if (isDiry) {
+    if (isDirty) {
       setCanSave(true);
       return;
     }
     setCanSave(false);
-  }, [isDiry]);
+
+    if (variant === Variant.FEEDBACK || variant === Variant.EXTSNR) {
+      setCanPrint(false);
+      return;
+    }
+
+    if (
+      !isDirty &&
+      snrList.some((x) => x.state !== SNRListEntryState.REMOVED)
+    ) {
+      setCanPrint(true);
+    }
+  }, [isDirty, variant, snrList]);
 
   const handleResult = (data: IPrepareDataResult) => {
     setPrepareData(data);
@@ -108,6 +121,26 @@ export const SNRMain = () => {
     setTimerActive(action === "START");
   };
 
+  const handleSave = () => {
+    try {
+      setError(undefined);
+
+      logger.debug(`Check if save is possible...`);
+      if (
+        snrList.some(
+          (x) =>
+            x.state === SNRListEntryState.DUPLICATE ||
+            x.state === SNRListEntryState.IS_BOX_SNR ||
+            x.state === SNRListEntryState.ERROR
+        )
+      ) {
+        logger.debug(
+          `There are items with bad state in the list, so save is not possible!`
+        );
+      }
+    } catch (error) {}
+  };
+
   return (
     <>
       {pageReady ? (
@@ -133,7 +166,11 @@ export const SNRMain = () => {
                   </BecButton>
                 )}
                 {canSave && (
-                  <BecButton variant={"default"} size={"default"}>
+                  <BecButton
+                    variant={"default"}
+                    size={"default"}
+                    onClick={handleSave}
+                  >
                     {t("profid:900000021")}
                   </BecButton>
                 )}

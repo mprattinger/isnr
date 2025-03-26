@@ -16,7 +16,10 @@ import { useTranslation } from "react-i18next";
 import { v7 } from "uuid";
 import { ReOrgSNRList } from "../utils/Tools";
 import { OkModal } from "../../../playground/modals/OkModal";
-import { ModalHandle } from "../../../playground/modals/Types";
+import {
+  IBaseMessagePayload,
+  ModalHandle,
+} from "../../../playground/modals/Types";
 
 interface ISNRProps {
   // onNewSnr: (snr: string) => Promise<void>;
@@ -32,25 +35,7 @@ export const SNR = (props: ISNRProps) => {
 
   const { t } = useTranslation();
 
-  const boxFullModal = useRef<ModalHandle>(null);
-
-  const [boxFullTitle, setBoxFullTitle] = useState("");
-  const [boxFullText, setBoxFullText] = useState("");
-
-  useEffect(() => {
-    switch (variant) {
-      case Variant.PACKAGING:
-        setBoxFullText(t("MaxPackaging"));
-        setBoxFullTitle(t("MaxPackagingHeader"));
-        break;
-      case Variant.TOOLBUILDING:
-        setBoxFullText(t("MaxTool"));
-        setBoxFullTitle(t("MaxToolHeader"));
-        break;
-      default:
-        break;
-    }
-  }, [variant]);
+  const boxFullModal = useRef<ModalHandle<IBaseMessagePayload>>(null);
 
   useEffect(() => {
     setSnrList(props.prevSnrs);
@@ -163,7 +148,23 @@ export const SNR = (props: ISNRProps) => {
     props.onModified(-1);
   };
 
-  const handleBoxFull = () => {};
+  const handleBoxFull = () => {
+    let boxFullTitle = "";
+    let boxFullMessage = "";
+
+    switch (variant) {
+      case Variant.PACKAGING:
+        boxFullTitle = t("MaxPackaging");
+        boxFullMessage = t("MaxPackagingHeader");
+        break;
+      case Variant.TOOLBUILDING:
+        boxFullTitle = t("MaxTool");
+        boxFullMessage = t("MaxToolHeader");
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <>
@@ -182,12 +183,7 @@ export const SNR = (props: ISNRProps) => {
           />
         ))}
       </SNRList>
-      <OkModal
-        modalRef={boxFullModal}
-        title={boxFullTitle}
-        message={boxFullText}
-        callback={handleBoxFull}
-      />
+      <OkModal modalRef={boxFullModal} />
     </>
   );
 };

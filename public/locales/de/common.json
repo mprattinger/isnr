@@ -18,5 +18,7 @@
   "MaxTool": "Es kann nichts mehr in das Geräte eingebaut werden. Bitte speichern Sie die eingebauten Seriennummern um mit einem neuen Gerät zu beginnen!",
   "MaxToolHeader": "Gerät voll",
   "DeleteISRNFromListHeader": "Seriennummer löschen",
-  "DeleteISRNFromList":"Wollen Sie die Seriennummer {0} aus der Liste löschen?"
+  "DeleteISRNFromList":"Wollen Sie die Seriennummer {0} aus der Liste löschen?",
+  "INVALID_ENTRIES_NO_SAVE": "In der Liste sind fehlerhafte Einträge! Speichern nicht möglich",
+  "INVALID_ENTRIES_NO_SAVE_TITLE": "Speichern nicht möglich"
 }

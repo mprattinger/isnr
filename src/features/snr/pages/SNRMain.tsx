@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppData } from "../../../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SNRListEntryState, SnrOrigin, Variant } from "../models/Types";
+import {
+  SaveMode,
+  SNRListEntryState,
+  SnrOrigin,
+  Variant,
+} from "../models/Types";
 import {
   BecButton,
   BecButtonRowContainer,
@@ -18,6 +23,12 @@ import { IPrepareDataResult, PrepareData } from "../components/PrepareData";
 import { SNRListEntry } from "../models/SNRListEntry";
 import { v7 } from "uuid";
 import logger from "../../../utils/Logger";
+import { OkModal } from "../../../playground/modals/OkModal";
+import {
+  IBaseMessagePayload,
+  ModalHandle,
+} from "../../../playground/modals/Types";
+import { SaveDialog } from "../components/modals/SaveDialog";
 
 export const SNRMain = () => {
   const { setProgramInfo, btrm, setError } = useAppData();
@@ -35,6 +46,13 @@ export const SNRMain = () => {
   const [snrList, setSnrList] = useState<SNRListEntry[]>([]);
   const [workCount, setWorkCount] = useState<number>(0);
   const [timerActive, setTimerActive] = useState(false);
+  // const [okModalText, setOkModalText] = useState("");
+  // const [okModalTitle, setOkModalTitle] = useState("");
+  // const [saveModalText, setSaveModalText] = useState("");
+  // const [saveModalTitle, setSaveModalTitle] = useState("");
+
+  const okModalRef = useRef<ModalHandle<IBaseMessagePayload, undefined>>(null);
+  const saveModalRef = useRef<ModalHandle<IBaseMessagePayload, SaveMode>>(null);
 
   //Initialization
   useEffect(() => {
@@ -121,7 +139,7 @@ export const SNRMain = () => {
     setTimerActive(action === "START");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       setError(undefined);
 
@@ -137,7 +155,16 @@ export const SNRMain = () => {
         logger.debug(
           `There are items with bad state in the list, so save is not possible!`
         );
+        // setOkModalText(t("INVALID_ENTRIES_NO_SAVE"));
+        // setOkModalTitle(t("INVALID_ENTRIES_NO_SAVE_TITLE"));
+        await okModalRef.current?.open({
+          title: t("INVALID_ENTRIES_NO_SAVE_TITLE"),
+          message: t("INVALID_ENTRIES_NO_SAVE"),
+        } as IBaseMessagePayload);
+        return;
       }
+
+      logger.debug("Saving is possible! Ask for save mode...");
     } catch (error) {}
   };
 
@@ -192,6 +219,8 @@ export const SNRMain = () => {
           onCancel={handlePrepareDataCanceled}
         />
       )}
+      <OkModal modalRef={okModalRef} />
+      <SaveDialog modalRef={saveModalRef} variant={variant} />
     </>
   );
 };

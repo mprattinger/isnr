@@ -25,3 +25,9 @@ export enum SNRListEntryState {
   IS_BOX_SNR,
   ERROR,
 }
+
+export enum SaveMode {
+  NEW,
+  REPORT,
+  SAVE,
+}

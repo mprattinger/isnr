@@ -1,4 +1,4 @@
-import { Ref, RefObject, useMemo, useState } from "react";
+import { RefObject, useMemo, useState } from "react";
 import {
   ApplicationError,
   BecButton,
@@ -21,6 +21,7 @@ import { useAppData } from "../../../../contexts/AppContext";
 import { Variant } from "../../models/Types";
 import {
   IBaseModalProps,
+  IBasePayload,
   ModalHandle,
   ModalResult,
 } from "../../../../playground/modals/Types";
@@ -32,7 +33,7 @@ export interface OrderInfoResult {
 }
 
 interface IOrderInfoModalProps
-  extends IBaseModalProps<undefined, OrderInfoResult> {
+  extends IBaseModalProps<IBasePayload, OrderInfoResult> {
   variant: Variant;
 }
 
@@ -87,7 +88,7 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
     }
 
     const ref = props.modalRef as RefObject<
-      ModalHandle<undefined, OrderInfoResult>
+      ModalHandle<IBasePayload, OrderInfoResult>
     >;
     if (ref.current) {
       ref.current.action(
@@ -101,7 +102,7 @@ export const OrderInfoModal = (props: IOrderInfoModalProps) => {
 
   const handleCancelClicked = () => {
     const ref = props.modalRef as RefObject<
-      ModalHandle<undefined, OrderInfoResult | undefined>
+      ModalHandle<IBasePayload, OrderInfoResult | undefined>
     >;
     if (ref.current) {
       ref.current.action(ModalResult.Cancel());

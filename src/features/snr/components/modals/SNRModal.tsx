@@ -20,12 +20,14 @@ import {
 } from "../../../common/services/ProfidGenericService";
 import {
   IBaseModalProps,
+  IBasePayload,
   ModalHandle,
   ModalResult,
 } from "../../../../playground/modals/Types";
 import { Modal } from "../../../../playground/modals/Modal";
 
-interface ISNRModalProps extends IBaseModalProps<undefined, SNRCheckResponse> {
+interface ISNRModalProps
+  extends IBaseModalProps<IBasePayload, SNRCheckResponse> {
   variant: Variant;
 }
 
@@ -97,14 +99,14 @@ export const SNRModal = (props: ISNRModalProps) => {
     }
 
     const ref = props.modalRef as RefObject<
-      ModalHandle<undefined, SNRCheckResponse | undefined>
+      ModalHandle<IBasePayload, SNRCheckResponse | undefined>
     >;
     ref.current.action(ModalResult.OkWithData(snrCheckResult));
   };
 
   const handleCancelClicked = () => {
     const ref = props.modalRef as RefObject<
-      ModalHandle<undefined, SNRCheckResponse | undefined>
+      ModalHandle<IBasePayload, SNRCheckResponse | undefined>
     >;
     if (ref.current) {
       ref.current.action(ModalResult.Cancel());

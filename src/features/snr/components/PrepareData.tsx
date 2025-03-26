@@ -7,7 +7,7 @@ import {
   SNRCheckResponse,
 } from "../../common/services/ProfidGenericService";
 import { SNRModal } from "./modals/SNRModal";
-import { ModalHandle } from "../../../playground/modals/Types";
+import { IBasePayload, ModalHandle } from "../../../playground/modals/Types";
 
 export interface IPrepareDataResult {
   feedback: FeedbackIdCheckResponse;
@@ -21,8 +21,9 @@ interface IPrepareDataProps {
   onCancel: () => void;
 }
 export const PrepareData = (props: IPrepareDataProps) => {
-  const orderInfoModal = useRef<ModalHandle<undefined, OrderInfoResult>>(null);
-  const snrModal = useRef<ModalHandle<undefined, SNRCheckResponse>>(null);
+  const orderInfoModal =
+    useRef<ModalHandle<IBasePayload, OrderInfoResult>>(null);
+  const snrModal = useRef<ModalHandle<IBasePayload, SNRCheckResponse>>(null);
 
   useEffect(() => {
     let data = {} as IPrepareDataResult;

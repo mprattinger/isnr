@@ -13,6 +13,7 @@ import {
 } from "../../../../playground/modals/Modal";
 import {
   IBaseModalProps,
+  IBasePayload,
   ModalHandle,
   ModalResult,
 } from "../../../../playground/modals/Types";
@@ -27,12 +28,17 @@ import { SnrOrigin } from "../../models/Types";
 import { useAppData } from "../../../../contexts/AppContext";
 import { useSNRContext } from "../../contexts/SNRContext";
 
+export interface IModifySNRPayload extends IBasePayload {
+  snr: string;
+}
+
 const modifySchema = z.object({
   snr: z.string().min(1, { message: "SNR must be at least 1 character long" }),
 });
 type ModifySchema = z.infer<typeof modifySchema>;
 
-interface IModifySNRModalProps extends IBaseModalProps<string, SNRListEntry> {
+interface IModifySNRModalProps
+  extends IBaseModalProps<IBasePayload, SNRListEntry> {
   snr: SNRListEntry;
 }
 
@@ -61,9 +67,9 @@ export function ModifySNRModal(props: IModifySNRModalProps) {
       ModalOpenEventName,
       (d) => {
         if (d instanceof CustomEvent) {
-          const evt = d.detail as IModalOpenEventPayload<string>;
+          const evt = d.detail as IModalOpenEventPayload<IModifySNRPayload>;
           if (evt.payload) {
-            setValue("snr", evt.payload);
+            setValue("snr", evt.payload.snr);
           }
         }
       },
@@ -88,7 +94,9 @@ export function ModifySNRModal(props: IModifySNRModalProps) {
     newSnr.serialnumber = d.snr;
     newSnr.origin = checkResult.snrOrigin ?? SnrOrigin.UNKNOWN;
 
-    const ref = props.modalRef as RefObject<ModalHandle<string, SNRListEntry>>;
+    const ref = props.modalRef as RefObject<
+      ModalHandle<IBasePayload, SNRListEntry>
+    >;
     if (ref.current) {
       ref.current.action(ModalResult.OkWithData(newSnr));
     }

@@ -5,7 +5,8 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { ModalHandle, ModalResult } from "./Types";
+import { IBasePayload, ModalHandle, ModalResult } from "./Types";
+import { ModalContextProvider } from "./ModalContextProvider";
 
 interface IModalProps<T, U> extends PropsWithChildren {
   defaultOpened?: boolean;
@@ -20,8 +21,9 @@ export interface IModalOpenEventPayload<T> {
 
 const modalElement = document.getElementById("modal");
 
-export function Modal<T, U>(props: IModalProps<T, U>) {
+export function Modal<T extends IBasePayload, U>(props: IModalProps<T, U>) {
   const [isOpen, setIsOpen] = useState(props.defaultOpened ?? false);
+  const [payload, setPayload] = useState<IBasePayload | undefined>();
 
   const promiseRef = useRef<(value: ModalResult<U | undefined>) => void>(null);
 
@@ -30,6 +32,7 @@ export function Modal<T, U>(props: IModalProps<T, U>) {
     () => ({
       open: (payload?: T) => {
         setIsOpen(true);
+        setPayload(payload);
         const modalToggleEvent = new CustomEvent<IModalOpenEventPayload<T>>(
           ModalOpenEventName,
           {
@@ -60,23 +63,23 @@ export function Modal<T, U>(props: IModalProps<T, U>) {
   };
 
   return createPortal(
-    // <ModalContextProvider isOpen={isOpen}>
-    isOpen ? (
-      <div className="fixed top-0 left-0 right-0 bottom-0 bg-becmodal z-50">
-        <div className="fixed top-[25%] left-[50%] bg-white z-50 -translate-x-[50%] -translate-y-[25%] rounded shadow-xl">
-          <div className="flex flex-col w-96 relative">
-            <div
-              className="cursor-pointer text-xl hover:font-bold absolute right-3 top-2"
-              onClick={handleCancelClick}
-            >
-              X
+    <ModalContextProvider payload={payload}>
+      {isOpen ? (
+        <div className="fixed top-0 left-0 right-0 bottom-0 bg-becmodal z-50">
+          <div className="fixed top-[25%] left-[50%] bg-white z-50 -translate-x-[50%] -translate-y-[25%] rounded shadow-xl">
+            <div className="flex flex-col w-96 relative">
+              <div
+                className="cursor-pointer text-xl hover:font-bold absolute right-3 top-2"
+                onClick={handleCancelClick}
+              >
+                X
+              </div>
+              {props.children}
             </div>
-            {props.children}
           </div>
         </div>
-      </div>
-    ) : null,
-    // </ModalContextProvider>,
+      ) : null}
+    </ModalContextProvider>,
     modalElement!
   );
 }

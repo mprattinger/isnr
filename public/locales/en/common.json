@@ -18,5 +18,7 @@
   "MaxTool": "Nothing can be added to the device anymore. Please save the added serialnumbers and start with a new device!",
   "MaxToolHeader": "Device full",
   "DeleteISRNFromListHeader": "Delete serial number",
-  "DeleteISRNFromList":"Do you want to delete ISNR {0} from the list?"
+  "DeleteISRNFromList":"Do you want to delete ISNR {0} from the list?",
+  "INVALID_ENTRIES_NO_SAVE": "There are invalid entries in the list! Saving is not possible",
+  "INVALID_ENTRIES_NO_SAVE_TITLE": "Saving is not possible"
 }

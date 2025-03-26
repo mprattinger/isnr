@@ -1,4 +1,9 @@
-import { IBaseModalProps, ModalHandle, ModalResult } from "./Types";
+import {
+  IBaseModalProps,
+  isBaseMessagePayload,
+  ModalHandle,
+  ModalResult,
+} from "./Types";
 import {
   BecButton,
   BecButtonRowContainer,
@@ -6,14 +11,22 @@ import {
 } from "bec-react-components";
 import { useTranslation } from "react-i18next";
 import { Modal } from "./Modal";
-import { RefObject } from "react";
+import { RefObject, useEffect, useState } from "react";
+import { useModalContext } from "./ModalContextProvider";
 
-interface IOkModalProps extends IBaseModalProps {
-  message: string;
-}
-
-export const OkModal = (props: IOkModalProps) => {
+export const OkModal = (props: IBaseModalProps) => {
   const { t } = useTranslation();
+  const { payload } = useModalContext();
+
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setTitle(payload?.title ?? "");
+    if (payload && isBaseMessagePayload(payload)) {
+      setMessage(payload.message ?? "");
+    }
+  }, [payload]);
 
   const handleOKClicked = () => {
     const ref = props.modalRef as RefObject<ModalHandle>;
@@ -24,8 +37,8 @@ export const OkModal = (props: IOkModalProps) => {
 
   return (
     <Modal ref={props.modalRef}>
-      <BecPanel header={props.title}>
-        <p>{props.message}</p>
+      <BecPanel header={title}>
+        <p>{message}</p>
         <BecButtonRowContainer>
           <BecButton variant={"orange"} onClick={handleOKClicked}>
             {t("profid:900001402")}

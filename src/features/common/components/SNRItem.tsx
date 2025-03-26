@@ -4,10 +4,20 @@ import { useTranslation } from "react-i18next";
 import { SNRListEntryState } from "../../snr/models/Types";
 import { ActionType, SNRItemActions } from "./SNRItemActions";
 import { useRef, useState } from "react";
-import { ModalHandle, ModalResult } from "../../../playground/modals/Types";
+import {
+  IBaseMessagePayload,
+  IBasePayload,
+  ModalHandle,
+  ModalResult,
+} from "../../../playground/modals/Types";
 import { YesNoModal } from "../../../playground/modals/YesNoModal";
 import { StringFormat } from "../../../utils/Tools";
-import { ModifySNRModal } from "../../snr/components/modals/ModifySNRModal";
+import {
+  IModifySNRPayload,
+  ModifySNRModal,
+} from "../../snr/components/modals/ModifySNRModal";
+
+interface ISNRPayload {}
 
 interface ISNRItemProps {
   isHeader?: boolean;
@@ -21,7 +31,7 @@ interface ISNRItemProps {
 export const SNRItem = (props: ISNRItemProps) => {
   const { t } = useTranslation();
 
-  const modifyPopup = useRef<ModalHandle<string, SNRListEntry>>(null);
+  const modifyPopup = useRef<ModalHandle<IBasePayload, SNRListEntry>>(null);
   const deletePopup = useRef<ModalHandle>(null);
 
   const itemTooltip = (): string => {
@@ -74,15 +84,21 @@ export const SNRItem = (props: ISNRItemProps) => {
 
   const handleAction = async (action: ActionType) => {
     if (action === "MODIFY") {
-      const res = await modifyPopup.current?.open(
-        props.snr?.serialnumber ?? ""
-      );
+      const res = await modifyPopup.current?.open({
+        snr: props.snr?.serialnumber,
+      } as IModifySNRPayload);
       if (res === undefined || res?.cancelled || res?.data === undefined) {
         return;
       }
       props.onSNRModified(res.data);
     } else {
-      const res = await deletePopup.current?.open();
+      const res = await deletePopup.current?.open({
+        title: t("DeleteISRNFromListHeader"),
+        message: StringFormat(
+          t("DeleteISRNFromList"),
+          props.snr?.serialnumber ?? ""
+        ),
+      } as IBaseMessagePayload);
       if (res === undefined || res?.cancelled) {
         return;
       }
@@ -123,14 +139,7 @@ export const SNRItem = (props: ISNRItemProps) => {
       {props.snr && (
         <>
           <ModifySNRModal modalRef={modifyPopup} snr={props.snr} />
-          <YesNoModal
-            modalRef={deletePopup}
-            title={t("DeleteISRNFromListHeader")}
-            message={StringFormat(
-              t("DeleteISRNFromList"),
-              props.snr.serialnumber
-            )}
-          />
+          <YesNoModal modalRef={deletePopup} />
         </>
       )}
     </>

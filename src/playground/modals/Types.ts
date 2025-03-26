@@ -1,6 +1,20 @@
 import { Ref } from "react";
 
-export type ModalHandle<T = undefined, U = undefined> = {
+export interface IBasePayload {
+  title?: string;
+}
+
+export interface IBaseMessagePayload extends IBasePayload {
+  message?: string;
+}
+
+export const isBaseMessagePayload = (
+  payload: IBasePayload
+): payload is IBaseMessagePayload => {
+  return (payload as IBaseMessagePayload).message !== undefined;
+};
+
+export type ModalHandle<T = IBasePayload, U = undefined> = {
   open: (payload?: T) => Promise<ModalResult<U | undefined>>;
   action: (payload: ModalResult<U>) => void;
 };
@@ -31,7 +45,6 @@ export class ModalResult<T = undefined> {
   }
 }
 
-export interface IBaseModalProps<T = undefined, U = undefined> {
+export interface IBaseModalProps<T = IBasePayload, U = undefined> {
   modalRef: Ref<ModalHandle<T, U>>;
-  title?: string;
 }
